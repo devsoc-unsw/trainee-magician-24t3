@@ -1,16 +1,13 @@
-.sign-up {
+/* .overlay {
+  right: 0;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
   border-radius: 80px 30px 30px 80px;
 }
 
-.overlay {
-  right: 0;
-  transform: translateX(0);
-  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-}
-
-.slideLeft {
+.overlaySlideLeft {
   transform: translateX(-100%);
-}
+  border-radius: 30px 80px 80px 30px;
+} */
 
 .input {
   width: 100%;
