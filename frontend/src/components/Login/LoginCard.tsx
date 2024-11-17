@@ -24,7 +24,7 @@ const LoginCard = () => {
       {/* Sign Up Form */}
       <div className="h-full w-6/12 p-12">
         <h1 className="mb-8 text-3xl font-light text-gray-900">Sign Up</h1>
-        <form className="flex flex-col gap-6 ">
+        <form className="flex flex-col gap-6">
           <input className={styles.input} placeholder="Email" type="email" />
           <input
             className={styles.input}
