@@ -1,0 +1,19 @@
+import "dotenv/config";
+import express, { json } from "express";
+import userRouter from "./routes/user";
+import cors from "cors";
+import testRouter from "./routes/test";
+
+const app = express();
+
+app.use(cors());
+app.use(json());
+
+app.use("/user", userRouter);
+app.use("/test", testRouter);
+
+app.get("/", (req, res) => {
+  res.send("hello world");
+});
+
+app.listen(process.env.LDPT_PORT);
