@@ -1,6 +1,8 @@
 import { collection, getDocs } from "@firebase/firestore";
 import db from "../db/db";
 import { deleteApp, getApps } from "@firebase/app";
+import "dotenv/config";
+import axios from "axios";
 
 describe("Initial test", () => {
   test("Database initialisation test", async () => {
@@ -9,6 +11,14 @@ describe("Initial test", () => {
     );
 
     expect(res[0]).toStrictEqual({ name: "Jayden" });
+  });
+
+  test("Test backend is working", async () => {
+    const res = await axios.get(
+      `${process.env.SERVER_ADDR}:${process.env.LDPT_PORT}/`
+    );
+
+    expect(res.data).toStrictEqual("hello world");
   });
 
   afterAll(async () => {
