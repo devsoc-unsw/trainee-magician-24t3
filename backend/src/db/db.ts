@@ -13,6 +13,6 @@ const config = {
 };
 
 const app = initializeApp(config);
-const db = getFirestore(app);
+const DB = getFirestore(app);
 
-export default db;
+export default DB;

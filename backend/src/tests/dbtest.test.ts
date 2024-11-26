@@ -1,12 +1,12 @@
 import { collection, getDocs } from "@firebase/firestore";
-import db from "../db/db";
+import DB from "../db/db";
 import { deleteApp, getApps } from "@firebase/app";
 import "dotenv/config";
 import axios from "axios";
 
 describe("Initial test", () => {
   test("Database initialisation test", async () => {
-    const res = (await getDocs(collection(db, "test"))).docs.map((d) =>
+    const res = (await getDocs(collection(DB, "test"))).docs.map((d) =>
       d.data()
     );
 
