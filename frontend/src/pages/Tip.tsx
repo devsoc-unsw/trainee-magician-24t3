@@ -1,6 +1,8 @@
 import TipHeading from "../components/TipHeading";
 import CommunityRating from "../components/CommunityRating";
 import CommentBox from "../components/CommentBox";
+import WelcomeIcon from "../components/WelcomeIcon";
+import PosterDetails from "../components/PosterDetails";
 
 export const Tip = () => {
 
@@ -13,17 +15,10 @@ export const Tip = () => {
       <div id="tip-header-container" className="flex w-3/5 my-5 border border-blue-400">
         <a href="google.com" className="inline-block text-lg underline underline-offset-4">&lt; Back to Home</a>
         
-        <div className="flex inline-block mr-0 ml-auto">
-          <div className="mr-4">
-            <span className="text-lg">Welcome, Jane</span>
-            <br />
-            <span className="text-sm underline text-gray-500">See profile</span>
-          </div>
-          <img
-            src={"https://i.pinimg.com/550x/18/b9/ff/18b9ffb2a8a791d50213a9d595c4dd52.jpg"}
-            className="w-16 h-16 rounded-full mb-2"
-          />
-        </div>
+        <WelcomeIcon
+          firstName="Jane"
+          profilePic="https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg"
+        />
       </div>
       <div id="tip-post-container" className="flex flex-col w-1/2 border border-red-400">
         <div className="flex">
@@ -34,6 +29,13 @@ export const Tip = () => {
             <CommunityRating rating="3" />
           </div>
         </div>
+
+        <PosterDetails
+          name="John Doe"
+          profilePic="https://i.pinimg.com/236x/93/27/52/932752831eb277a92480d9830b4c072d.jpg"
+          date={new Date('2024-10-22')}
+        />
+
         <hr className="my-2" />
         <div>
           <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magnam inventore ipsum officiis id provident blanditiis numquam exercitationem, atque molestiae porro, amet tempora saepe consequuntur eius adipisci perspiciatis fugiat sunt at minus? Sunt, porro nobis. Error dolorem at veritatis quam, sequi eligendi, vitae consequuntur distinctio voluptatum quod voluptate ut? Excepturi nesciunt inventore iste culpa ratione reiciendis ducimus porro, ut exercitationem commodi nobis vel minus minima enim cumque nostrum laborum! Cumque dicta nemo animi suscipit tenetur dolore architecto in adipisci aut quam! Aliquid, ut sed quidem possimus exercitationem voluptatem repudiandae, vel necessitatibus corporis rem modi iste! Libero natus eius dolor quam similique.</p>
