@@ -57,6 +57,11 @@ export const Tip = () => {
           <TipHeading>COMMENTS</TipHeading> 
         </div>
 
+        <div className="mb-6 rounded-[26px]">
+          <textarea  placeholder="Add a comment" className="flex border border-black flex w-full h-20 p-5 flex rounded-[26px] mb-4"></textarea>
+          <button className="flex border border-black pl-5 pr-5 pt-2 pb-2 ml-auto rounded-[26px] bg-[#63C779] text-white hover:bg-[#518004]">Comment</button>
+        </div>
+
         <div>
           <CommentBox
             name="Some name1"
