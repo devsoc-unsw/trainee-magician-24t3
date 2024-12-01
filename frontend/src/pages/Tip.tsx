@@ -3,6 +3,7 @@ import CommunityRating from "../components/CommunityRating";
 import CommentBox from "../components/CommentBox";
 import WelcomeIcon from "../components/WelcomeIcon";
 import PosterDetails from "../components/PosterDetails";
+import UpvoteDownvote from "../components/UpvoteDownvote";
 
 export const Tip = () => {
 
@@ -41,6 +42,13 @@ export const Tip = () => {
           <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magnam inventore ipsum officiis id provident blanditiis numquam exercitationem, atque molestiae porro, amet tempora saepe consequuntur eius adipisci perspiciatis fugiat sunt at minus? Sunt, porro nobis. Error dolorem at veritatis quam, sequi eligendi, vitae consequuntur distinctio voluptatum quod voluptate ut? Excepturi nesciunt inventore iste culpa ratione reiciendis ducimus porro, ut exercitationem commodi nobis vel minus minima enim cumque nostrum laborum! Cumque dicta nemo animi suscipit tenetur dolore architecto in adipisci aut quam! Aliquid, ut sed quidem possimus exercitationem voluptatem repudiandae, vel necessitatibus corporis rem modi iste! Libero natus eius dolor quam similique.</p>
           <br />
           <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quam debitis expedita numquam consequuntur id magni molestias quae repellendus aut laudantium vero quaerat in repellat impedit suscipit, reprehenderit sit dolore! Nostrum nam sequi, velit dolor dolorem unde minima consequatur quisquam facilis perspiciatis sint suscipit ea debitis aliquam omnis, eaque possimus nobis!</p>
+        </div>
+
+        <div className="inline-block ml-0 mr-auto w-4/5 mb-8 mt-6">
+          <UpvoteDownvote
+            upvotes={5}
+            downvotes={710}      
+          />
         </div>
       </div>
 
