@@ -12,10 +12,17 @@ export const Tip = () => {
     >
       <div id="tip-header-container" className="flex w-3/5 my-5 border border-blue-400">
         <a href="google.com" className="inline-block text-lg underline underline-offset-4">&lt; Back to Home</a>
-        <div className="inline-block mr-0 ml-auto">
-          <span className="text-lg">Welcome, Jane</span>
-          <br />
-          <span className="text-sm underline text-gray-500">See profile</span>
+        
+        <div className="flex inline-block mr-0 ml-auto">
+          <div className="mr-4">
+            <span className="text-lg">Welcome, Jane</span>
+            <br />
+            <span className="text-sm underline text-gray-500">See profile</span>
+          </div>
+          <img
+            src={"https://i.pinimg.com/550x/18/b9/ff/18b9ffb2a8a791d50213a9d595c4dd52.jpg"}
+            className="w-16 h-16 rounded-full mb-2"
+          />
         </div>
       </div>
       <div id="tip-post-container" className="flex flex-col w-1/2 border border-red-400">
