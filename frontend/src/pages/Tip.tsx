@@ -35,25 +35,28 @@ export const Tip = () => {
         </div>
       </div>
 
-      <div className="flex flex-col justify-center w-1/2 border border-red-400">
-        <div className="inline-block ml-0 mr-auto border border-blue-400 w-4/5">
+      <div className="flex flex-col justify-center w-1/2">
+        <div className="inline-block ml-0 mr-auto w-4/5 mb-8">
           <TipHeading>COMMENTS</TipHeading> 
         </div>
 
         <div>
           <CommentBox
-            name="Someone's name1"
+            name="Some name1"
             text="To be continued.."
             profilePic="https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg"
+            date={new Date('2024-10-26')}
           />
           <CommentBox
-            name="Someone's name2"
+            name="Some name2"
             text="This is a comment!2"
             profilePic="https://i.pinimg.com/474x/ca/f7/67/caf7677c71e8a7bf115c77ff8761fec5.jpg"
+            date={new Date('2024-10-26')}
           />
           <CommentBox
-            name="Someone's name3"
-            text="This is also a comment!3"
+            name="Some name3"
+            text="This is a very long comment. This is a very long comment. This is a very long comment. This is a very long comment. This is a very long comment."
+            date={new Date('2024-10-26')}
           />
         </div>
       </div>
