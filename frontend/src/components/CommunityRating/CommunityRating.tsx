@@ -22,7 +22,7 @@ const CommunityRating = ({
   };
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-2">
       <h3 className="text-lg font-semibold text-[#555555]">Community Rating</h3>
       <div className="flex items-center gap-2">
         {range(1, 5).map((circle) => (

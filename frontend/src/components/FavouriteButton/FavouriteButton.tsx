@@ -18,7 +18,7 @@ const FavouriteButton = (props: FavouriteButtonProps) => {
   };
 
   return (
-    <div className="flex flex-row items-center border border-green-400">
+    <div className="flex flex-row items-center">
       <span
         className={`ml-auto mr-0 text-lg font-semibold ${styles.favouriteText}`}
         style={{ color: isFavourited ? "#FFDD43" : "#555555" }}

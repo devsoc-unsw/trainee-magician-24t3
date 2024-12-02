@@ -40,7 +40,7 @@ const TipTags = (props: TipTagsProps) => {
         return (
           <div
             key={index}
-            className="mx-px my-auto rounded-lg border border-neutral-400 px-2"
+            className="mx-px my-px rounded-lg border border-neutral-400 px-2"
             style={{
               backgroundColor:
                 letterToColourMap.get(tagString.charAt(1).toUpperCase()) ??

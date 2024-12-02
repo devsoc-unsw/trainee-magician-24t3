@@ -47,10 +47,13 @@ export const Tip = () => {
             "#sit_amet_consectetur",
             "#elit",
             "#magnam",
+            "#libero",
             "#adipisci",
             "#corporis",
             "#quae",
             "#suscipit",
+            "#natus",
+            "#rem",
           ]}
         ></TipTags>
 
