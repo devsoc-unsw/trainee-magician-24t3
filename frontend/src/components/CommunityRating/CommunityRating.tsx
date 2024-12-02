@@ -1,37 +1,47 @@
+import { useState } from "react";
+import { range } from "../../utils/range";
+
 interface CommunityRatingProps {
-  rating?: string;
+  initialRating?: number;
+  onRatingSubmit?: (rating: number) => void;
+  readonly?: boolean;
 }
 
-const CommunityRating = (props: CommunityRatingProps) => {
-  const ratingComponentList = [];
-  let numRating = 0;
-  if (props.rating !== undefined) {
-    numRating = parseInt(props.rating);
-  }
+const CommunityRating = ({
+  initialRating = 0,
+  onRatingSubmit,
+  readonly = false,
+}: CommunityRatingProps) => {
+  const [rating, setRating] = useState<number>(initialRating);
+  const [hoveredRating, setHoveredRating] = useState<number | null>(null);
 
-  // reset rating to min or max if invalid input
-  if (numRating >= 5) numRating = 5;
-  if (numRating < 0) numRating = 0;
-
-  // add filled / unfilled circle components
-  for (let i = 0; i < numRating; i++) {
-    ratingComponentList.push(
-      <div className="m-1 flex h-5 w-5 rounded-full border border-black bg-[#63C779]"></div>
-    );
-  }
-  for (let i = 0; i < 5 - numRating; i++) {
-    ratingComponentList.push(
-      <div className="m-1 flex h-5 w-5 rounded-full border border-black bg-white"></div>
-    );
-  }
+  const handleRatingClick = (selectedRating: number) => {
+    if (readonly) return;
+    setRating(selectedRating);
+    onRatingSubmit?.(selectedRating);
+  };
 
   return (
-    <div className="flex flex-col justify-center">
-      <h3 className="m-auto text-lg font-semibold text-[#555555]">
-        Community Rating
-      </h3>
-      <div className="flex flex-row justify-center">
-        {ratingComponentList}
+    <div className="flex flex-col items-center gap-4">
+      <h3 className="text-lg font-semibold text-[#555555]">Community Rating</h3>
+      <div className="flex items-center gap-2">
+        {range(1, 5).map((circle) => (
+          <button
+            key={circle}
+            className={`h-5 w-5 rounded-full border border-black transition-all duration-200 hover:scale-110 active:scale-95 ${
+              (
+                hoveredRating !== null
+                  ? hoveredRating >= circle
+                  : rating >= circle
+              )
+                ? "bg-[#63C779]"
+                : "bg-white"
+            } ${readonly ? "cursor-default" : "cursor-pointer"}`}
+            onMouseEnter={() => !readonly && setHoveredRating(circle)}
+            onMouseLeave={() => !readonly && setHoveredRating(null)}
+            onClick={() => handleRatingClick(circle)}
+          />
+        ))}
       </div>
     </div>
   );
