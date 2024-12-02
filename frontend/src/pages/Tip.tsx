@@ -39,7 +39,20 @@ export const Tip = () => {
           date={new Date("2024-10-22")}
         />
 
-        <TipTags tags={['#lorem', '#ipsum', '#dolor', '#sit_amet_consectetur', '#elit', '#magnam', '#adipisci', '#corporis', '#quae', '#suscipit']}></TipTags>
+        <TipTags
+          tags={[
+            "#lorem",
+            "#ipsum",
+            "#dolor",
+            "#sit_amet_consectetur",
+            "#elit",
+            "#magnam",
+            "#adipisci",
+            "#corporis",
+            "#quae",
+            "#suscipit",
+          ]}
+        ></TipTags>
 
         <hr className="my-2" />
         <div>
@@ -68,14 +81,11 @@ export const Tip = () => {
           </p>
         </div>
 
-        <div className="flex flex-row items-center my-4">
-          <div className="inline-block ml-0 mr-auto w-4/5">
-            <UpvoteDownvote
-              upvotes={5}
-              downvotes={710}      
-            />
+        <div className="my-4 flex flex-row items-center">
+          <div className="ml-0 mr-auto inline-block w-4/5">
+            <UpvoteDownvote upvotes={5} downvotes={710} />
           </div>
-          <div className="inline-block ml-auto mr-0 w-1/5">
+          <div className="ml-auto mr-0 inline-block w-1/5">
             <FavouriteButton />
           </div>
         </div>
@@ -87,8 +97,13 @@ export const Tip = () => {
         </div>
 
         <div className="mb-6 rounded-[26px]">
-          <textarea  placeholder="Add a comment" className="flex border border-black flex w-full h-20 p-5 flex rounded-[26px] mb-4"></textarea>
-          <button className="flex border border-black pl-5 pr-5 pt-2 pb-2 ml-auto rounded-[26px] bg-[#63C779] text-white hover:bg-[#518004]">Comment</button>
+          <textarea
+            placeholder="Add a comment"
+            className="mb-4 flex h-20 w-full rounded-[26px] border border-black p-5"
+          ></textarea>
+          <button className="ml-auto flex rounded-[26px] border border-black bg-[#63C779] pb-2 pl-5 pr-5 pt-2 text-white hover:bg-[#518004]">
+            Comment
+          </button>
         </div>
 
         <div>
