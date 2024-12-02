@@ -4,6 +4,8 @@ import CommentBox from "../components/CommentBox";
 import WelcomeIcon from "../components/WelcomeIcon";
 import PosterDetails from "../components/PosterDetails";
 import UpvoteDownvote from "../components/UpvoteDownvote";
+import TipTags from "../components/TipTags";
+import FavouriteButton from "../components/FavouriteButton/FavouriteButton";
 
 export const Tip = () => {
   return (
@@ -37,6 +39,8 @@ export const Tip = () => {
           date={new Date("2024-10-22")}
         />
 
+        <TipTags tags={['#lorem', '#ipsum', '#dolor', '#sit_amet_consectetur', '#elit', '#magnam', '#adipisci', '#corporis', '#quae', '#suscipit']}></TipTags>
+
         <hr className="my-2" />
         <div>
           <p>
@@ -64,8 +68,16 @@ export const Tip = () => {
           </p>
         </div>
 
-        <div className="mb-8 ml-0 mr-auto mt-6 inline-block w-4/5">
-          <UpvoteDownvote upvotes={5} downvotes={710} />
+        <div className="flex flex-row items-center my-4">
+          <div className="inline-block ml-0 mr-auto w-4/5">
+            <UpvoteDownvote
+              upvotes={5}
+              downvotes={710}      
+            />
+          </div>
+          <div className="inline-block ml-auto mr-0 w-1/5">
+            <FavouriteButton />
+          </div>
         </div>
       </div>
 
