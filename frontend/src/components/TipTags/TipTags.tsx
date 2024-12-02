@@ -3,32 +3,32 @@ interface TipTagsProps {
 }
 
 const letterToColourMap = new Map([
-  ["A", "#DC2626"], // Red
-  ["B", "#EA580C"], // Orange
-  ["C", "#FCD34D"], // Yellow
-  ["D", "#EEC94B"], // Yellow-Gold
-  ["E", "#84CC16"], // Lime Green
-  ["F", "#22C55E"], // Green
-  ["G", "#10B981"], // Teal
-  ["H", "#06B6D4"], // Light Blue
-  ["I", "#2563EB"], // Blue
-  ["J", "#4F46E5"], // Indigo
-  ["K", "#7C3AED"], // Purple
-  ["L", "#A855F7"], // Lavender
+  ["A", "#F87171"], // Pastel Red
+  ["B", "#FB923C"], // Pastel Orange
+  ["C", "#FACC15"], // Pastel Yellow
+  ["D", "#FBBF24"], // Warm Yellow-Gold
+  ["E", "#A3E635"], // Lime Green
+  ["F", "#4ADE80"], // Pastel Green
+  ["G", "#34D399"], // Pastel Teal
+  ["H", "#22D3EE"], // Pastel Light Blue
+  ["I", "#3B82F6"], // Pastel Blue
+  ["J", "#6366F1"], // Pastel Indigo
+  ["K", "#8B5CF6"], // Pastel Purple
+  ["L", "#C084FC"], // Lavender
   ["M", "#EC4899"], // Hot Pink
   ["N", "#DB2777"], // Deep Pink
   ["O", "#D946EF"], // Magenta
-  ["P", "#9F1239"], // Deep Red
+  ["P", "#E11D48"], // Deep Red
   ["Q", "#C026D3"], // Bright Magenta
-  ["R", "#D97706"], // Dark Orange
-  ["S", "#B91C1C"], // Crimson Red
-  ["T", "#0D9488"], // Turquoise
-  ["U", "#4338CA"], // Deep Blue
-  ["V", "#256D85"], // Blue-Green
+  ["R", "#FB923C"], // Pastel Dark Orange
+  ["S", "#F43F5E"], // Crimson Red
+  ["T", "#14B8A6"], // Turquoise
+  ["U", "#4F46E5"], // Deep Blue
+  ["V", "#2DD4BF"], // Blue-Green
   ["W", "#FACC15"], // Bright Yellow
-  ["X", "#10A37F"], // Forest Green
-  ["Y", "#9333EA"], // Deep Violet
-  ["Z", "#0284C7"]  // Sky Blue
+  ["X", "#34D399"], // Forest Green
+  ["Y", "#A855F7"], // Deep Violet
+  ["Z", "#38BDF8"], // Sky Blue
 ]);
 
 const TipTags = (props: TipTagsProps) => {
@@ -36,13 +36,20 @@ const TipTags = (props: TipTagsProps) => {
 
   return (
     <div className="mt-2 flex flex-row flex-wrap">
-      {tags.map((tagString) => {
-        console.log(letterToColourMap);
-        console.log(tagString);
-        console.log(letterToColourMap.get(tagString.charAt(1).toUpperCase()));
+      {tags.map((tagString, index) => {
         return (
-          <div className={`my-auto rounded-lg border border-neutral-400 bg-[${ letterToColourMap.get(tagString.charAt(1).toUpperCase()) ?? '#000000' }] px-2`}>
-            <span className="text-white">{tagString}</span>
+          <div
+            key={index}
+            className="mx-px my-auto rounded-lg border border-neutral-400 px-2"
+            style={{
+              backgroundColor:
+                letterToColourMap.get(tagString.charAt(1).toUpperCase()) ??
+                "#000000",
+            }}
+          >
+            <a className="text-white" href={`/tags/${tagString.substring(1)}`}>
+              {tagString}
+            </a>
           </div>
         );
       })}

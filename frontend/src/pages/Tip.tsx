@@ -38,7 +38,7 @@ export const Tip = () => {
           date={new Date('2024-10-22')}
         />
 
-        <TipTags tags={['#lorem', '#ipsum', '#dolor', '#sit_amet_consectetur', '#hello', '#bruh']}></TipTags>
+        <TipTags tags={['#lorem', '#ipsum', '#dolor', '#sit_amet_consectetur', '#elit', '#magnam', '#adipisci', '#corporis', '#quae', '#suscipit']}></TipTags>
 
         <hr className="my-2" />
         <div>
