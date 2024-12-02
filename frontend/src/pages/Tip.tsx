@@ -4,6 +4,7 @@ import CommentBox from "../components/CommentBox";
 import WelcomeIcon from "../components/WelcomeIcon";
 import PosterDetails from "../components/PosterDetails";
 import UpvoteDownvote from "../components/UpvoteDownvote";
+import TipTags from "../components/TipTags";
 
 export const Tip = () => {
 
@@ -36,6 +37,8 @@ export const Tip = () => {
           profilePic="https://i.pinimg.com/236x/93/27/52/932752831eb277a92480d9830b4c072d.jpg"
           date={new Date('2024-10-22')}
         />
+
+        <TipTags tags={['#lorem', '#ipsum', '#dolor', '#sit_amet_consectetur', '#hello', '#bruh']}></TipTags>
 
         <hr className="my-2" />
         <div>
