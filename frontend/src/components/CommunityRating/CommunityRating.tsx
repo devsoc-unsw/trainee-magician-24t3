@@ -1,5 +1,6 @@
 interface CommunityRatingProps {
   rating?: string;
+  showText?: boolean;
 }
 
 const CommunityRating = (props: CommunityRatingProps) => {
@@ -27,9 +28,11 @@ const CommunityRating = (props: CommunityRatingProps) => {
 
   return (
     <div className="flex flex-col justify-center">
-      <h3 className="m-auto text-lg font-semibold text-[#555555]">
-        Community Rating
-      </h3>
+      {props.showText !== false && (
+        <h3 className="m-auto text-lg font-semibold text-[#555555]">
+          Community Rating
+        </h3>
+      )}
       <div className="flex flex-row justify-center">
         {ratingComponentList}
       </div>

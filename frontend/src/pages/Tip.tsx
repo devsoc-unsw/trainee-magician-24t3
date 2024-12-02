@@ -5,6 +5,7 @@ import WelcomeIcon from "../components/WelcomeIcon";
 import PosterDetails from "../components/PosterDetails";
 import UpvoteDownvote from "../components/UpvoteDownvote";
 import TipTags from "../components/TipTags";
+import FavouriteButton from "../components/FavouriteButton/FavouriteButton";
 
 export const Tip = () => {
 
@@ -47,11 +48,16 @@ export const Tip = () => {
           <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quam debitis expedita numquam consequuntur id magni molestias quae repellendus aut laudantium vero quaerat in repellat impedit suscipit, reprehenderit sit dolore! Nostrum nam sequi, velit dolor dolorem unde minima consequatur quisquam facilis perspiciatis sint suscipit ea debitis aliquam omnis, eaque possimus nobis!</p>
         </div>
 
-        <div className="inline-block ml-0 mr-auto w-4/5 mb-8 mt-6">
-          <UpvoteDownvote
-            upvotes={5}
-            downvotes={710}      
-          />
+        <div className="flex flex-row items-center my-4">
+          <div className="inline-block ml-0 mr-auto w-4/5">
+            <UpvoteDownvote
+              upvotes={5}
+              downvotes={710}      
+            />
+          </div>
+          <div className="inline-block ml-auto mr-0 w-1/5">
+            <FavouriteButton />
+          </div>
         </div>
       </div>
 
