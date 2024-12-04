@@ -16,6 +16,7 @@
       "authorId": "id of user document",
       "tags": ["tag_name_1"],
       "rating": "float",
+      "description": "string",
       "upvotes": "integer",
       "downvotes": "integer",
       "createdAt": "ISO Date string",
