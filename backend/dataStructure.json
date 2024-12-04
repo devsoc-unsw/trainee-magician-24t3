@@ -12,13 +12,14 @@
   "tips": [
     {
       "title": "string",
+      "type": "DEATH OR LIFE",
       "authorId": "id of user document",
       "tags": ["tag_name_1"],
       "rating": "float",
       "upvotes": "integer",
       "downvotes": "integer",
       "createdAt": "ISO Date string",
-      "content": "string...post yap",
+      "lifeContent": "string...post yap",
       "comments": [
         {
           "authorId": "id of user document",
