@@ -9,9 +9,13 @@ interface UpvoteDownvoteProps {
 const UpvoteDownvote = (props: UpvoteDownvoteProps) => {
   return (
     <div className="flex">
-      <img src={UpvoteImage} alt="Upvote" className="mr-2 h-7 w-7" />
+      <button>
+        <img src={UpvoteImage} alt="Upvote" className="mr-2 h-7 w-7" />
+      </button>
       <h3 className="mr-4">{props.upvotes}</h3>
-      <img src={DownvoteImage} alt="Upvote" className="mr-2 h-7 w-7" />
+      <button>
+        <img src={DownvoteImage} alt="Upvote" className="mr-2 h-7 w-7" />
+      </button>
       <h3>{props.downvotes}</h3>
     </div>
   );
