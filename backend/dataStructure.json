@@ -17,8 +17,8 @@
       "tags": ["tag_name_1"],
       "rating": "float",
       "description": "string",
-      "upvotes": "integer",
-      "downvotes": "integer",
+      "upvotes": ["array of user Ids"],
+      "downvotes": ["array of user Ids"],
       "createdAt": "ISO Date string",
       "lifeContent": "string...post yap",
       "comments": [
