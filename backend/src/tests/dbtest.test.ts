@@ -27,6 +27,22 @@ describe("Initial test", () => {
     expect(res.data.length > 0);
   });
 
+  test("testing creating a new user", async () => {
+    const res = await axios.post(`${SERVER}/users/register`, {
+      email: "ewell.ortiz@ethereal.email",
+      password: "FZKJA3Sfk3KAz7MDRg",
+      firstName: "Ewell",
+      lastName: "Ortiz",
+    });
+
+    expect(res.data).toStrictEqual({
+      userId: expect.any(String),
+    });
+
+    const delRes = await axios.delete(`${SERVER}/users/${res.data.userId}`);
+    expect(delRes.data).toStrictEqual({});
+  });
+
   afterAll(async () => {
     const apps = getApps();
     if (apps.length) await Promise.all(apps.map(deleteApp));
