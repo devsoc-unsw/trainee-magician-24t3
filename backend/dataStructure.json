@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "firstName": "string",
+      "lastName": "string",
+      "profileUrl": "string",
+      "favouritePosts": ["array of tip ids"],
+      "password": "string",
+      "email": "string"
+    }
+  ],
+  "tips": [
+    {
+      "title": "string",
+      "authorId": "id of user document",
+      "tags": ["tag_name_1"],
+      "rating": "float",
+      "upvotes": "integer",
+      "downvotes": "integer",
+      "createdAt": "ISO Date string",
+      "content": "string...post yap",
+      "comments": [
+        {
+          "authorId": "id of user document",
+          "content": "string",
+          "createdAt": "ISO Date string"
+        }
+      ]
+    }
+  ]
+}
