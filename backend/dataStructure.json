@@ -15,7 +15,12 @@
       "type": "DEATH OR LIFE",
       "authorId": "id of user document",
       "tags": ["tag_name_1"],
-      "rating": "float",
+      "ratings": [
+        {
+          "value": "Integer value of 1, 2, 3, 4 or 5",
+          "raterId": "id of user who made the rating"
+        }
+      ],
       "description": "string",
       "upvotes": ["array of user Ids"],
       "downvotes": ["array of user Ids"],
