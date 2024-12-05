@@ -9,6 +9,7 @@ import {
 import { query, Router } from "express";
 import DB from "../db/db";
 import { register } from "../user/register";
+import { login } from "../user/login";
 
 const userRouter = Router();
 
@@ -26,6 +27,15 @@ userRouter.post("/register", async (req, res) => {
     req.body.password,
     req.body.firstName,
     req.body.lastName
+  );
+
+  res.send(ret);
+});
+
+userRouter.post("/login", async (req, res) => {
+  const ret = await login(
+    req.body.email,
+    req.body.password,
   );
 
   res.send(ret);
