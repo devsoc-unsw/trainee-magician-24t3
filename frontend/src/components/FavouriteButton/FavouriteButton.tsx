@@ -18,7 +18,11 @@ const FavouriteButton = (props: FavouriteButtonProps) => {
   };
 
   return (
-    <div className="flex flex-row items-center">
+    <div 
+      className={`flex flex-row items-center cursor-pointer ${styles.favouriteContainer}`}
+      onClick={toggleFavourited}
+      data-favourited={isFavourited}
+    >
       <span
         className={`ml-auto mr-0 text-lg font-semibold ${styles.favouriteText}`}
         style={{ color: isFavourited ? "#FFDD43" : "#555555" }}
@@ -30,20 +34,17 @@ const FavouriteButton = (props: FavouriteButtonProps) => {
           src={InactiveFavouriteImage}
           alt="favourite icon"
           className={`mr-0 ${styles.favouriteButton}`}
-          onClick={toggleFavourited}
         />
         <img
           src={ActiveFavouriteImage}
           alt="favourite icon"
           className={`mr-0 ${styles.favouriteButton} ${styles.overlayFavouriteButton}`}
           style={{ opacity: isFavourited ? 1 : 0 }}
-          onClick={toggleFavourited}
         />
         <img
           src={HoverFavouriteImage}
           alt="favourite icon"
           className={`mr-0 ${styles.favouriteButton} ${styles.overlayFavouriteButton} ${styles.hoverFavouriteButton}`}
-          onClick={toggleFavourited}
         />
       </div>
     </div>

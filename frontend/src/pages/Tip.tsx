@@ -1,3 +1,4 @@
+import { useState } from "react";
 import TipHeading from "../components/TipHeading";
 import CommunityRating from "../components/CommunityRating";
 import CommentBox from "../components/CommentBox";
@@ -7,7 +8,155 @@ import UpvoteDownvote from "../components/UpvoteDownvote";
 import TipTags from "../components/TipTags";
 import FavouriteButton from "../components/FavouriteButton/FavouriteButton";
 
-export const Tip = () => {
+interface Rating {
+  value: 1 | 2 | 3 | 4 | 5;
+  raterId: string;
+}
+
+interface Comment {
+  authorId: string;
+  content: string;
+  createdAt: string;
+  // Additional frontend-only properties after fetching
+  author?: {
+    name: string;
+    profilePic?: string;
+  };
+}
+
+interface TipProps {
+  id: string;
+  title: string;
+  type: "DEATH OR LIFE"; // Can be expanded to include other types if needed
+  authorId: string;
+  tags: string[];
+  ratings: Rating[];
+  description: string;
+  upvotes: string[]; // Array of user IDs
+  downvotes: string[]; // Array of user IDs
+  createdAt: string;
+  content: string;
+  comments: Comment[];
+  // Additional frontend-only properties after fetching
+  author?: {
+    name: string;
+    profilePic: string;
+  };
+}
+
+// Update mock data to match new structure
+const mockTip: TipProps = {
+  id: "tip123",
+  title: "This is my tip hello hello hello hello",
+  type: "DEATH OR LIFE",
+  authorId: "user123",
+  description: "A sample tip description",
+  upvotes: ["user1", "user2", "user3", "user4", "user5"],
+  downvotes: ["user6", "user7", "user8", "user9", "user10"],
+  createdAt: "2024-10-22T00:00:00.000Z",
+  content: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magnam
+    inventore ipsum officiis id provident blanditiis numquam
+    exercitationem, atque molestiae porro, amet tempora saepe
+    consequuntur eius adipisci perspiciatis fugiat sunt at minus? Sunt,
+    porro nobis. Error dolorem at veritatis quam, sequi eligendi, vitae
+    consequuntur distinctio voluptatum quod voluptate ut? Excepturi
+    nesciunt inventore iste culpa ratione reiciendis ducimus porro, ut
+    exercitationem commodi nobis vel minus minima enim cumque nostrum
+    laborum! Cumque dicta nemo animi suscipit tenetur dolore architecto
+    in adipisci aut quam! Aliquid, ut sed quidem possimus exercitationem
+    voluptatem repudiandae, vel necessitatibus corporis rem modi iste!
+    Libero natus eius dolor quam similique.\n\n
+    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quam
+    debitis expedita numquam consequuntur id magni molestias quae
+    repellendus aut laudantium vero quaerat in repellat impedit
+    suscipit, reprehenderit sit dolore! Nostrum nam sequi, velit dolor
+    dolorem unde minima consequatur quisquam facilis perspiciatis sint
+    suscipit ea debitis aliquam omnis, eaque possimus nobis!`,
+  tags: [
+    "#lorem",
+    "#ipsum",
+    "#dolor",
+    "#sit_amet_consectetur",
+    "#elit",
+    "#magnam",
+    "#libero",
+    "#adipisci",
+    "#corporis",
+    "#quae",
+    "#suscipit",
+    "#natus",
+    "#rem",
+  ],
+  ratings: [
+    { value: 3, raterId: "user1" },
+    { value: 4, raterId: "user2" },
+    { value: 3, raterId: "user3" },
+  ],
+  comments: [
+    {
+      authorId: "user456",
+      content: "To be continued..",
+      createdAt: "2024-10-26T00:00:00.000Z",
+      author: {
+        name: "Some name1",
+        profilePic:
+          "https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg",
+      },
+    },
+    {
+      authorId: "user789",
+      content: "This is a comment!2",
+      createdAt: "2024-10-26T00:00:00.000Z",
+      author: {
+        name: "Some name2",
+        profilePic:
+          "https://i.pinimg.com/474x/ca/f7/67/caf7677c71e8a7bf115c77ff8761fec5.jpg",
+      },
+    },
+    {
+      authorId: "user101",
+      content:
+        "This is a very long comment. This is a very long comment. This is a very long comment. This is a very long comment. This is a very long comment.",
+      createdAt: "2024-10-26T00:00:00.000Z",
+      author: {
+        name: "Some name3",
+      },
+    },
+  ],
+  // Frontend-only data (would be populated after fetching)
+  author: {
+    name: "John Doe",
+    profilePic:
+      "https://i.pinimg.com/236x/93/27/52/932752831eb277a92480d9830b4c072d.jpg",
+  },
+};
+
+const TipContent = ({
+  title,
+  content,
+  author,
+  createdAt,
+  upvotes,
+  downvotes,
+  tags,
+  ratings,
+  comments,
+}: TipProps) => {
+  const [localUpvotes, setLocalUpvotes] = useState(upvotes.length);
+  const [localDownvotes, setLocalDownvotes] = useState(downvotes.length);
+  const averageRating =
+    ratings.reduce((acc, curr) => acc + curr.value, 0) / ratings.length;
+
+  const handleUpvote = (isUpvoting: boolean) => {
+    setLocalUpvotes((prev) => prev + (isUpvoting ? 1 : -1));
+    // Here you would make an API call to update the upvotes
+  };
+
+  const handleDownvote = (isDownvoting: boolean) => {
+    setLocalDownvotes((prev) => prev + (isDownvoting ? 1 : -1));
+    // Here you would make an API call to update the downvotes
+  };
+
   return (
     <div id="tip-page-container" className="flex h-full flex-col items-center">
       <div id="tip-header-container" className="my-5 flex w-3/5">
@@ -26,67 +175,34 @@ export const Tip = () => {
       <div id="tip-post-container" className="flex w-1/2 flex-col">
         <div className="flex">
           <div className="ml-0 mr-auto inline-block w-4/5">
-            <TipHeading>This is my tip hello hello hello hello</TipHeading>
+            <TipHeading>{title}</TipHeading>
           </div>
           <div className="my-auto ml-auto mr-0 inline-block w-1/5">
-            <CommunityRating initialRating={3} />
+            <CommunityRating initialRating={averageRating} />
           </div>
         </div>
 
         <PosterDetails
-          name="John Doe"
-          profilePic="https://i.pinimg.com/236x/93/27/52/932752831eb277a92480d9830b4c072d.jpg"
-          date={new Date("2024-10-22")}
+          name={author?.name || "Unknown"}
+          profilePic={author?.profilePic}
+          date={new Date(createdAt)}
         />
 
-        <TipTags
-          tags={[
-            "#lorem",
-            "#ipsum",
-            "#dolor",
-            "#sit_amet_consectetur",
-            "#elit",
-            "#magnam",
-            "#libero",
-            "#adipisci",
-            "#corporis",
-            "#quae",
-            "#suscipit",
-            "#natus",
-            "#rem",
-          ]}
-        ></TipTags>
+        <TipTags tags={tags} />
 
         <hr className="my-2" />
         <div>
-          <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magnam
-            inventore ipsum officiis id provident blanditiis numquam
-            exercitationem, atque molestiae porro, amet tempora saepe
-            consequuntur eius adipisci perspiciatis fugiat sunt at minus? Sunt,
-            porro nobis. Error dolorem at veritatis quam, sequi eligendi, vitae
-            consequuntur distinctio voluptatum quod voluptate ut? Excepturi
-            nesciunt inventore iste culpa ratione reiciendis ducimus porro, ut
-            exercitationem commodi nobis vel minus minima enim cumque nostrum
-            laborum! Cumque dicta nemo animi suscipit tenetur dolore architecto
-            in adipisci aut quam! Aliquid, ut sed quidem possimus exercitationem
-            voluptatem repudiandae, vel necessitatibus corporis rem modi iste!
-            Libero natus eius dolor quam similique.
-          </p>
-          <br />
-          <p>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quam
-            debitis expedita numquam consequuntur id magni molestias quae
-            repellendus aut laudantium vero quaerat in repellat impedit
-            suscipit, reprehenderit sit dolore! Nostrum nam sequi, velit dolor
-            dolorem unde minima consequatur quisquam facilis perspiciatis sint
-            suscipit ea debitis aliquam omnis, eaque possimus nobis!
-          </p>
+          <p>{content}</p>
         </div>
 
         <div className="my-4 flex flex-row items-center">
           <div className="ml-0 mr-auto inline-block w-4/5">
-            <UpvoteDownvote upvotes={5} downvotes={710} />
+            <UpvoteDownvote
+              upvotes={localUpvotes}
+              downvotes={localDownvotes}
+              onUpvote={handleUpvote}
+              onDownvote={handleDownvote}
+            />
           </div>
           <div className="ml-auto mr-0 inline-block w-1/5">
             <FavouriteButton />
@@ -110,25 +226,22 @@ export const Tip = () => {
         </div>
 
         <div>
-          <CommentBox
-            name="Some name1"
-            text="To be continued.."
-            profilePic="https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg"
-            date={new Date("2024-10-26")}
-          />
-          <CommentBox
-            name="Some name2"
-            text="This is a comment!2"
-            profilePic="https://i.pinimg.com/474x/ca/f7/67/caf7677c71e8a7bf115c77ff8761fec5.jpg"
-            date={new Date("2024-10-26")}
-          />
-          <CommentBox
-            name="Some name3"
-            text="This is a very long comment. This is a very long comment. This is a very long comment. This is a very long comment. This is a very long comment."
-            date={new Date("2024-10-26")}
-          />
+          {comments.map((comment) => (
+            <CommentBox
+              key={comment.authorId}
+              name={comment.author?.name || "Unknown"}
+              text={comment.content}
+              profilePic={comment.author?.profilePic}
+              date={new Date(comment.createdAt)}
+            />
+          ))}
         </div>
       </div>
     </div>
   );
+};
+
+export const Tip = () => {
+  // Spread the mock data as props
+  return <TipContent {...mockTip} />;
 };

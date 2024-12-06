@@ -1,3 +1,19 @@
+.favouriteContainer {
+  transition: all 0.2s ease-in-out;
+}
+
+.favouriteContainer:hover .favouriteText {
+  color: #FFDD43 !important;
+}
+
+.favouriteContainer:hover .hoverFavouriteButton {
+  opacity: 0;
+}
+
+.favouriteContainer:hover:not([data-favourited="true"]) .hoverFavouriteButton {
+  opacity: 1;
+}
+
 .favouriteText {
   transition: color 0.2s ease-in-out;
 }
@@ -22,6 +38,6 @@
   transition: opacity 0.2s ease-in-out;
 }
 
-.hoverFavouriteButton:hover {
-  opacity: 1;
+.hoverFavouriteButton {
+  opacity: 0;
 }
