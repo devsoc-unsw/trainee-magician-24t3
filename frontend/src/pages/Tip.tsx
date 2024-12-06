@@ -6,7 +6,7 @@ import WelcomeIcon from "../components/WelcomeIcon";
 import PosterDetails from "../components/PosterDetails";
 import UpvoteDownvote from "../components/UpvoteDownvote";
 import TipTags from "../components/TipTags";
-import FavouriteButton from "../components/FavouriteButton/FavouriteButton";
+import FavouriteButton from "../components/FavouriteButton";
 
 interface Rating {
   value: 1 | 2 | 3 | 4 | 5;
@@ -32,8 +32,8 @@ interface TipProps {
   tags: string[];
   ratings: Rating[];
   description: string;
-  upvotes: string[]; // Array of user IDs
-  downvotes: string[]; // Array of user IDs
+  upvotes: string[]; // Array of user emails
+  downvotes: string[]; // Array of user emails
   createdAt: string;
   content: string;
   comments: Comment[];
@@ -51,15 +51,28 @@ interface TipProps {
   };
 }
 
-// Update mock data to match new structure
+// Update mock data to include emails in upvotes/downvotes
 const mockTip: TipProps = {
   id: "tip123",
   title: "This is my tip hello hello hello hello",
   type: "DEATH OR LIFE",
   authorId: "user123",
   description: "A sample tip description",
-  upvotes: ["user1", "user2", "user3", "user4", "user5"],
-  downvotes: ["user6", "user7", "user8", "user9", "user10"],
+  upvotes: [
+    "jane@example.com",
+    "user1@example.com",
+    "user2@example.com",
+    "user3@example.com",
+    "user4@example.com",
+    "user5@example.com",
+  ],
+  downvotes: [
+    "user6@example.com",
+    "user7@example.com",
+    "user8@example.com",
+    "user9@example.com",
+    "user10@example.com",
+  ],
   createdAt: "2024-10-22T00:00:00.000Z",
   content: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magnam
     inventore ipsum officiis id provident blanditiis numquam
@@ -139,10 +152,11 @@ const mockTip: TipProps = {
   currentUser: {
     firstName: "Jane",
     lastName: "Doe",
-    profileUrl: "https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg",
+    profileUrl:
+      "https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg",
     favouritePosts: ["tip123"], // Include the current tip ID to show it's favorited
-    email: "jane@example.com"
-  }
+    email: "jane@example.com",
+  },
 };
 
 const TipContent = ({
@@ -158,21 +172,47 @@ const TipContent = ({
   ratings,
   comments,
 }: TipProps) => {
-  const [localUpvotes, setLocalUpvotes] = useState(upvotes.length);
-  const [localDownvotes, setLocalDownvotes] = useState(downvotes.length);
+  const [localUpvotes, setLocalUpvotes] = useState(upvotes);
+  const [localDownvotes, setLocalDownvotes] = useState(downvotes);
   const averageRating =
     ratings.reduce((acc, curr) => acc + curr.value, 0) / ratings.length;
   const [isFavourited, setIsFavourited] = useState(
-    currentUser?.favouritePosts.includes(id) ?? false
+    currentUser?.favouritePosts.includes(id) ?? false,
+  );
+
+  // Derive hasUpvoted and hasDownvoted from the data
+  const hasUpvoted = Boolean(
+    currentUser && localUpvotes.includes(currentUser.email),
+  );
+  const hasDownvoted = Boolean(
+    currentUser && localDownvotes.includes(currentUser.email),
   );
 
   const handleUpvote = (isUpvoting: boolean) => {
-    setLocalUpvotes((prev) => prev + (isUpvoting ? 1 : -1));
+    const userId = currentUser?.email;
+    if (!userId) return;
+
+    setLocalUpvotes((prev) => {
+      if (isUpvoting) {
+        return [...prev, userId];
+      } else {
+        return prev.filter((id) => id !== userId);
+      }
+    });
     // Here you would make an API call to update the upvotes
   };
 
   const handleDownvote = (isDownvoting: boolean) => {
-    setLocalDownvotes((prev) => prev + (isDownvoting ? 1 : -1));
+    const userId = currentUser?.email;
+    if (!userId) return;
+
+    setLocalDownvotes((prev) => {
+      if (isDownvoting) {
+        return [...prev, userId];
+      } else {
+        return prev.filter((id) => id !== userId);
+      }
+    });
     // Here you would make an API call to update the downvotes
   };
 
@@ -222,14 +262,16 @@ const TipContent = ({
         <div className="my-4 flex flex-row items-center">
           <div className="ml-0 mr-auto inline-block w-4/5">
             <UpvoteDownvote
-              upvotes={localUpvotes}
-              downvotes={localDownvotes}
+              upvotes={localUpvotes.length}
+              downvotes={localDownvotes.length}
+              hasUpvoted={hasUpvoted}
+              hasDownvoted={hasDownvoted}
               onUpvote={handleUpvote}
               onDownvote={handleDownvote}
             />
           </div>
           <div className="ml-auto mr-0 inline-block w-1/5">
-            <FavouriteButton 
+            <FavouriteButton
               hasFavourited={isFavourited}
               onFavourite={handleFavourite}
             />
