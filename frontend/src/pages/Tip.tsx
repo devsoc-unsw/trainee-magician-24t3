@@ -42,6 +42,13 @@ interface TipProps {
     name: string;
     profilePic: string;
   };
+  currentUser?: {
+    firstName: string;
+    lastName: string;
+    profileUrl: string;
+    favouritePosts: string[];
+    email: string;
+  };
 }
 
 // Update mock data to match new structure
@@ -129,9 +136,18 @@ const mockTip: TipProps = {
     profilePic:
       "https://i.pinimg.com/236x/93/27/52/932752831eb277a92480d9830b4c072d.jpg",
   },
+  currentUser: {
+    firstName: "Jane",
+    lastName: "Doe",
+    profileUrl: "https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg",
+    favouritePosts: ["tip123"], // Include the current tip ID to show it's favorited
+    email: "jane@example.com"
+  }
 };
 
 const TipContent = ({
+  id,
+  currentUser,
   title,
   content,
   author,
@@ -146,6 +162,9 @@ const TipContent = ({
   const [localDownvotes, setLocalDownvotes] = useState(downvotes.length);
   const averageRating =
     ratings.reduce((acc, curr) => acc + curr.value, 0) / ratings.length;
+  const [isFavourited, setIsFavourited] = useState(
+    currentUser?.favouritePosts.includes(id) ?? false
+  );
 
   const handleUpvote = (isUpvoting: boolean) => {
     setLocalUpvotes((prev) => prev + (isUpvoting ? 1 : -1));
@@ -155,6 +174,11 @@ const TipContent = ({
   const handleDownvote = (isDownvoting: boolean) => {
     setLocalDownvotes((prev) => prev + (isDownvoting ? 1 : -1));
     // Here you would make an API call to update the downvotes
+  };
+
+  const handleFavourite = () => {
+    setIsFavourited(!isFavourited);
+    // Here you would make an API call to update the user's favouritePosts array
   };
 
   return (
@@ -205,7 +229,10 @@ const TipContent = ({
             />
           </div>
           <div className="ml-auto mr-0 inline-block w-1/5">
-            <FavouriteButton />
+            <FavouriteButton 
+              hasFavourited={isFavourited}
+              onFavourite={handleFavourite}
+            />
           </div>
         </div>
       </div>

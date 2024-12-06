@@ -6,15 +6,17 @@ import { useState } from "react";
 
 interface FavouriteButtonProps {
   hasFavourited?: boolean;
+  onFavourite?: () => void;
 }
 
-const FavouriteButton = (props: FavouriteButtonProps) => {
-  const [isFavourited, setFavouriteState] = useState(
-    props.hasFavourited ?? false,
-  );
+const FavouriteButton = ({ hasFavourited = false, onFavourite }: FavouriteButtonProps) => {
+  const [isFavourited, setFavouriteState] = useState(hasFavourited);
 
   const toggleFavourited = () => {
     setFavouriteState(!isFavourited);
+    if (onFavourite) {
+      onFavourite();
+    }
   };
 
   return (
