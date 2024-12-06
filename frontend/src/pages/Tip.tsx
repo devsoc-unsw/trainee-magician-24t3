@@ -216,8 +216,8 @@ const TipContent = ({
     // Here you would make an API call to update the downvotes
   };
 
-  const handleFavourite = () => {
-    setIsFavourited(!isFavourited);
+  const handleFavourite = (isFavouriting: boolean) => {
+    setIsFavourited(isFavouriting);
     // Here you would make an API call to update the user's favouritePosts array
   };
 
