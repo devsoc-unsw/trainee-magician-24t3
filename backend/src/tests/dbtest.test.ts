@@ -47,4 +47,32 @@ describe("Initial test", () => {
     const apps = getApps();
     if (apps.length) await Promise.all(apps.map(deleteApp));
   });
+
+  test("testing fetching user data from a userId", async () => {
+    // Create user
+    const resRegister = await axios.post(`${SERVER}/users/register`, {
+      email: "ewell.ortiz@ethereal.email",
+      password: "FZKJA3Sfk3KAz7MDRg",
+      firstName: "Ewell",
+      lastName: "Ortiz",
+    });
+
+    const res = await axios.get(`${SERVER}/users/${resRegister.data.userId}`);
+    expect(res.data).toStrictEqual({
+      firstName: "Ewell",
+      lastName: "Ortiz",
+      profileUrl: expect.any(String),
+      favouritePosts: [],
+      password: "FZKJA3Sfk3KAz7MDRg",
+      email: "ewell.ortiz@ethereal.email"
+    });
+
+    const delRes = await axios.delete(`${SERVER}/users/${resRegister.data.userId}`);
+    expect(delRes.data).toStrictEqual({});
+  });
+
+  afterAll(async () => {
+    const apps = getApps();
+    if (apps.length) await Promise.all(apps.map(deleteApp));
+  });
 });
