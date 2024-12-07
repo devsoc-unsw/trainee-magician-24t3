@@ -1,0 +1,43 @@
+.favouriteContainer {
+  transition: all 0.2s ease-in-out;
+}
+
+.favouriteContainer:hover .favouriteText {
+  color: #FFDD43 !important;
+}
+
+.favouriteContainer:hover .hoverFavouriteButton {
+  opacity: 0;
+}
+
+.favouriteContainer:hover:not([data-favourited="true"]) .hoverFavouriteButton {
+  opacity: 1;
+}
+
+.favouriteText {
+  transition: color 0.2s ease-in-out;
+}
+
+.imageBox {
+  position: relative;
+  float: left;
+}
+
+.favouriteButton {
+  width: 2.5rem /* 40px */;
+  height: 2.5rem /* 40px */;
+}
+
+.overlayFavouriteButton {
+  width: 2.5rem /* 40px */;
+  height: 2.5rem /* 40px */;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.hoverFavouriteButton {
+  opacity: 0;
+}
