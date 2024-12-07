@@ -36,16 +36,30 @@ export async function fetchFavTips(
   const docRef = doc(DB, 'users', userId);
   const docSnapshot = await getDoc(docRef);
 
-  // error checking for docSnapshot..?
+  // error checking for docSnapshot to see if it exits?..?
   const favouriteTipIds = docSnapshot.data().favouritePosts;
 
-  const favTips = [];
+  const favTips:Tip[] = [];
   for (const tipId of favouriteTipIds) {
     const tipDocRef = doc(DB, 'tips', tipId);
-    // error checking???
     const tipDocSnapshot = await getDoc(tipDocRef);
-    const tipData = tipDocSnapshot.data();
-    favTips.push(tipData);
+    if (tipDocSnapshot.exists()) {
+      const tipData = tipDocSnapshot.data();
+      const tip = {
+        title: tipData.title,
+        type: tipData.type,
+        authorId: tipData.authorId,
+        tags: tipData.tags,
+        ratings: tipData.ratings,
+        description: tipData.description,
+        upvotes: tipData.upvotes,
+        downvotes: tipData.downvotes,
+        createdAt: tipData.createdAt,
+        content: tipData.content,
+        comments: tipData.comments
+      }
+      favTips.push(tip);
+    }
   }
 
   return {

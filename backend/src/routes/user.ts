@@ -9,6 +9,7 @@ import {
 import { query, Router } from "express";
 import DB from "../db/db";
 import { register } from "../user/register";
+import { fetchFavTips } from "../user/fetchFavTips";
 
 const userRouter = Router();
 
@@ -18,6 +19,12 @@ userRouter.get("/:id", (req, res) => {
   res.send({
     id: req.params.id,
   });
+});
+
+userRouter.get("/:id/favourites", async (req, res) => {
+  const ret = await fetchFavTips(req.params.id);
+
+  res.send(ret);
 });
 
 userRouter.post("/register", async (req, res) => {

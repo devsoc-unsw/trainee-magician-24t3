@@ -52,7 +52,9 @@ describe("Initial test", () => {
       lastName: "Ortiz",
     });
     const res = await axios.get(`${SERVER}/users/${resRegister.data.userId}/favourites`);
-    expect(res.data).toStrictEqual([]);
+    expect(res.data).toStrictEqual({
+      tips: []
+    });
 
     //add tests when favourite tip and create tip functions are implemented
 
