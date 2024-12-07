@@ -25,15 +25,15 @@ interface Comment {
 }
 
 interface TipProps {
-  id: string;
+  tipId: string;
   title: string;
   type: "DEATH OR LIFE"; // Can be expanded to include other types if needed
   authorId: string;
   tags: string[];
   ratings: Rating[];
   description: string;
-  upvotes: string[]; // Array of user emails
-  downvotes: string[]; // Array of user emails
+  upvotes: string[]; // Array of userIds
+  downvotes: string[]; // Array of userIds
   createdAt: string;
   content: string;
   comments: Comment[];
@@ -43,6 +43,7 @@ interface TipProps {
     profilePic: string;
   };
   currentUser?: {
+    userId: string;
     firstName: string;
     lastName: string;
     profileUrl: string;
@@ -53,26 +54,13 @@ interface TipProps {
 
 // Update mock data to include emails in upvotes/downvotes
 const mockTip: TipProps = {
-  id: "tip123",
+  tipId: "tip123",
   title: "This is my tip hello hello hello hello",
   type: "DEATH OR LIFE",
   authorId: "user123",
   description: "A sample tip description",
-  upvotes: [
-    "jane@example.com",
-    "user1@example.com",
-    "user2@example.com",
-    "user3@example.com",
-    "user4@example.com",
-    "user5@example.com",
-  ],
-  downvotes: [
-    "user6@example.com",
-    "user7@example.com",
-    "user8@example.com",
-    "user9@example.com",
-    "user10@example.com",
-  ],
+  upvotes: ["user123", "user1", "user2", "user3", "user4", "user5"],
+  downvotes: ["user6", "user7", "user8", "user9", "user10"],
   createdAt: "2024-10-22T00:00:00.000Z",
   content: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magnam
     inventore ipsum officiis id provident blanditiis numquam
@@ -150,17 +138,18 @@ const mockTip: TipProps = {
       "https://i.pinimg.com/236x/93/27/52/932752831eb277a92480d9830b4c072d.jpg",
   },
   currentUser: {
+    userId: "user123",
     firstName: "Jane",
     lastName: "Doe",
     profileUrl:
       "https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg",
-    favouritePosts: ["tip123"], // Include the current tip ID to show it's favorited
+    favouritePosts: ["tip123"],
     email: "jane@example.com",
   },
 };
 
 const TipContent = ({
-  id,
+  tipId,
   currentUser,
   title,
   content,
@@ -174,22 +163,28 @@ const TipContent = ({
 }: TipProps) => {
   const [localUpvotes, setLocalUpvotes] = useState(upvotes);
   const [localDownvotes, setLocalDownvotes] = useState(downvotes);
-  const averageRating =
-    ratings.reduce((acc, curr) => acc + curr.value, 0) / ratings.length;
+  const [localRatings, setLocalRatings] = useState<Rating[]>(ratings);
   const [isFavourited, setIsFavourited] = useState(
-    currentUser?.favouritePosts.includes(id) ?? false,
+    currentUser?.favouritePosts.includes(tipId) ?? false,
   );
+  const [localComments, setLocalComments] = useState<Comment[]>(comments);
+  const [newCommentText, setNewCommentText] = useState('');
+
+  // Calculate average rating
+  const averageRating = localRatings.length > 0
+    ? localRatings.reduce((acc, curr) => acc + curr.value, 0) / localRatings.length
+    : 0;
 
   // Derive hasUpvoted and hasDownvoted from the data
   const hasUpvoted = Boolean(
-    currentUser && localUpvotes.includes(currentUser.email),
+    currentUser && localUpvotes.includes(currentUser.userId),
   );
   const hasDownvoted = Boolean(
-    currentUser && localDownvotes.includes(currentUser.email),
+    currentUser && localDownvotes.includes(currentUser.userId),
   );
 
   const handleUpvote = (isUpvoting: boolean) => {
-    const userId = currentUser?.email;
+    const userId = currentUser?.userId;
     if (!userId) return;
 
     setLocalUpvotes((prev) => {
@@ -203,7 +198,7 @@ const TipContent = ({
   };
 
   const handleDownvote = (isDownvoting: boolean) => {
-    const userId = currentUser?.email;
+    const userId = currentUser?.userId;
     if (!userId) return;
 
     setLocalDownvotes((prev) => {
@@ -219,6 +214,38 @@ const TipContent = ({
   const handleFavourite = (isFavouriting: boolean) => {
     setIsFavourited(isFavouriting);
     // Here you would make an API call to update the user's favouritePosts array
+  };
+
+  const handleRatingSubmit = (newRating: number) => {
+    const userId = currentUser?.userId;
+    if (!userId) return;
+
+    setLocalRatings(prev => {
+      // Remove existing rating if any
+      const filtered = prev.filter(rating => rating.raterId !== userId);
+      // Add new rating
+      return [...filtered, { value: newRating as 1 | 2 | 3 | 4 | 5, raterId: userId }];
+    });
+    // Here you would make an API call to update the ratings
+  };
+
+  const handleAddComment = () => {
+    const userId = currentUser?.userId;
+    if (!userId || !newCommentText.trim()) return;
+
+    const newComment: Comment = {
+      authorId: userId,
+      content: newCommentText.trim(),
+      createdAt: new Date().toISOString(),
+      author: {
+        name: `${currentUser.firstName} ${currentUser.lastName}`,
+        profilePic: currentUser.profileUrl,
+      },
+    };
+
+    setLocalComments(prev => [...prev, newComment]);
+    setNewCommentText(''); // Clear input
+    // Here you would make an API call to add the comment
   };
 
   return (
@@ -242,7 +269,11 @@ const TipContent = ({
             <TipHeading>{title}</TipHeading>
           </div>
           <div className="my-auto ml-auto mr-0 inline-block w-1/5">
-            <CommunityRating initialRating={averageRating} />
+            <CommunityRating
+              initialRating={averageRating}
+              onRatingSubmit={handleRatingSubmit}
+              readonly={!currentUser}
+            />
           </div>
         </div>
 
@@ -287,17 +318,28 @@ const TipContent = ({
         <div className="mb-6 rounded-[26px]">
           <textarea
             placeholder="Add a comment"
+            value={newCommentText}
+            onChange={(e) => setNewCommentText(e.target.value)}
             className="mb-4 flex h-20 w-full rounded-[26px] border border-black p-5"
-          ></textarea>
-          <button className="ml-auto flex rounded-[26px] border border-black bg-[#63C779] pb-2 pl-5 pr-5 pt-2 text-white hover:bg-[#518004]">
+            disabled={!currentUser}
+          />
+          <button 
+            onClick={handleAddComment}
+            disabled={!currentUser || !newCommentText.trim()}
+            className={`ml-auto flex rounded-[26px] border border-black pb-2 pl-5 pr-5 pt-2 text-white
+              ${!currentUser || !newCommentText.trim() 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-[#63C779] hover:bg-[#518004]'
+              }`}
+          >
             Comment
           </button>
         </div>
 
         <div>
-          {comments.map((comment) => (
+          {localComments.map((comment, index) => (
             <CommentBox
-              key={comment.authorId}
+              key={`${comment.authorId}-${index}`}
               name={comment.author?.name || "Unknown"}
               text={comment.content}
               profilePic={comment.author?.profilePic}

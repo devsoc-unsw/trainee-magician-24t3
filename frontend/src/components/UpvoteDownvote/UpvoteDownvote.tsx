@@ -40,18 +40,22 @@ const UpvoteDownvote = ({
     <div className="flex">
       <button
         onClick={handleUpvote}
-        className={`transition-transform ${hasUpvoted ? "scale-110" : ""}`}
+        className="transition-transform hover:scale-110"
       >
         <img src={UpvoteImage} alt="Upvote" className="mr-2 h-7 w-7" />
       </button>
-      <h3 className="mr-4">{upvotes}</h3>
+      <h3 className={`mr-4 ${hasUpvoted ? "text-green-500" : ""}`}>
+        {upvotes}
+      </h3>
       <button
         onClick={handleDownvote}
-        className={`transition-transform ${hasDownvoted ? "scale-110" : ""}`}
+        className="transition-transform hover:scale-110"
       >
         <img src={DownvoteImage} alt="Downvote" className="mr-2 h-7 w-7" />
       </button>
-      <h3>{downvotes}</h3>
+      <h3 className={`mr-4 ${hasDownvoted ? "text-red-500" : ""}`}>
+        {downvotes}
+      </h3>
     </div>
   );
 };

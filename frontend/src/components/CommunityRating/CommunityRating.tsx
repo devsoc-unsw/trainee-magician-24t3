@@ -12,12 +12,10 @@ const CommunityRating = ({
   onRatingSubmit,
   readonly = false,
 }: CommunityRatingProps) => {
-  const [rating, setRating] = useState<number>(initialRating);
   const [hoveredRating, setHoveredRating] = useState<number | null>(null);
 
   const handleRatingClick = (selectedRating: number) => {
     if (readonly) return;
-    setRating(selectedRating);
     onRatingSubmit?.(selectedRating);
   };
 
@@ -28,15 +26,18 @@ const CommunityRating = ({
         {range(1, 5).map((circle) => (
           <button
             key={circle}
-            className={`h-5 w-5 rounded-full border border-black transition-all duration-200 hover:scale-110 active:scale-95 ${
-              (
+            className={`h-5 w-5 rounded-full border border-black transition-all duration-200 
+              ${!readonly && "hover:scale-110"}
+              ${
                 hoveredRating !== null
                   ? hoveredRating >= circle
-                  : rating >= circle
-              )
-                ? "bg-[#63C779]"
-                : "bg-white"
-            } ${readonly ? "cursor-default" : "cursor-pointer"}`}
+                    ? "bg-[#FFDD43]" // Gold for hover state
+                    : "bg-white"
+                  : initialRating >= circle
+                    ? "bg-[#63C779]" // Green for community rating
+                    : "bg-white"
+              } 
+              ${readonly ? "cursor-default" : "cursor-pointer"}`}
             onMouseEnter={() => !readonly && setHoveredRating(circle)}
             onMouseLeave={() => !readonly && setHoveredRating(null)}
             onClick={() => handleRatingClick(circle)}
