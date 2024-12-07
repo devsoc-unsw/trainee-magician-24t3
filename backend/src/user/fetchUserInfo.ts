@@ -1,7 +1,7 @@
-import { collection, query, where, getDoc, limit, doc } from "@firebase/firestore";
+import { getDoc, doc } from "@firebase/firestore";
 import DB from "../db/db";
 
-export interface UserInfoReturn {
+export interface FetchUserInfoReturn {
     firstName: string,
     lastName: string,
     profileUrl: string,
@@ -10,9 +10,9 @@ export interface UserInfoReturn {
     email: string
 }
 
-export async function userInfo(
+export async function fetchUserInfo(
   userId: string
-): Promise<UserInfoReturn> {
+): Promise<FetchUserInfoReturn> {
   const docRef = doc(DB, 'users', userId);
   const docSnapshot = await getDoc(docRef);
   const userInfo = docSnapshot.data();

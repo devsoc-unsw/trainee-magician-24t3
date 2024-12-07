@@ -9,16 +9,16 @@ import {
 import { query, Router } from "express";
 import DB from "../db/db";
 import { register } from "../user/register";
+import { fetchUserInfo } from "../user/fetchUserInfo";
 
 const userRouter = Router();
 
-// not correct code
-userRouter.get("/:id", (req, res) => {
-  console.log(req.params.id);
-  res.send({
-    id: req.params.id,
-  });
+userRouter.get("/:id", async (req, res) => {
+  const ret = await fetchUserInfo(req.params.id);
+
+  res.send(ret);
 });
+
 
 userRouter.post("/register", async (req, res) => {
   const ret = await register(
