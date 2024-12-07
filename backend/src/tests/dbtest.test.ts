@@ -43,6 +43,23 @@ describe("Initial test", () => {
     expect(delRes.data).toStrictEqual({});
   });
 
+  test("testing fetching a user's favourite tips from a userId", async () => {
+    // Create user
+    const resRegister = await axios.post(`${SERVER}/users/register`, {
+      email: "ewell.ortiz@ethereal.email",
+      password: "FZKJA3Sfk3KAz7MDRg",
+      firstName: "Ewell",
+      lastName: "Ortiz",
+    });
+    const res = await axios.get(`${SERVER}/users/${resRegister.data.userId}/favourites`);
+    expect(res.data).toStrictEqual([]);
+
+    //add tests when favourite tip and create tip functions are implemented
+
+    const delRes = await axios.delete(`${SERVER}/users/${resRegister.data.userId}`);
+    expect(delRes.data).toStrictEqual({});
+  });
+
   afterAll(async () => {
     const apps = getApps();
     if (apps.length) await Promise.all(apps.map(deleteApp));
