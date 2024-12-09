@@ -49,7 +49,7 @@ describe("Initial test", () => {
       type: "LIFE",
       authorId: "123",
       description: "this is an example description",
-      content: "this is example content"
+      content: "this is example content",
     });
 
     expect(createRes.data).toStrictEqual({
@@ -70,7 +70,7 @@ describe("Initial test", () => {
       createdAt: expect.any(Number),
       title: "example title",
       comments: [],
-      type: "LIFE"
+      type: "LIFE",
     });
 
     const delRes = await axios.delete(`${SERVER}/tips/${createRes.data.tipId}`);

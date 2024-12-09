@@ -1,6 +1,12 @@
 import { Router } from "express";
 import DB from "../db/db";
-import { collection, doc, getDocs, getDoc, deleteDoc } from "@firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  deleteDoc,
+} from "@firebase/firestore";
 import { createTip } from "../tips/createTip";
 
 const tipsRouter = Router();
