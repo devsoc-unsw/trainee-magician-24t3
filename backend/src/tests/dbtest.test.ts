@@ -43,6 +43,40 @@ describe("Initial test", () => {
     expect(delRes.data).toStrictEqual({});
   });
 
+  test("Test creating, fetching and deleting single new tip", async () => {
+    const createRes = await axios.post(`${SERVER}/tips/`, {
+      title: "example title",
+      type: "LIFE",
+      authorId: "123",
+      description: "this is an example description",
+      content: "this is example content"
+    });
+
+    expect(createRes.data).toStrictEqual({
+      tipId: expect.any(String),
+    });
+
+    const viewRes = await axios.get(`${SERVER}/tips/${createRes.data.tipId}`);
+
+    // currently not testing time-based properties because not bothered.
+    expect(viewRes.data).toStrictEqual({
+      authorId: "123",
+      ratings: [],
+      downvotes: [],
+      content: "this is example content",
+      upvotes: [],
+      description: "this is an example description",
+      tags: [],
+      createdAt: expect.any(Number),
+      title: "example title",
+      comments: [],
+      type: "LIFE"
+    });
+
+    const delRes = await axios.delete(`${SERVER}/tips/${createRes.data.tipId}`);
+    expect(delRes.data).toStrictEqual({});
+  });
+
   afterAll(async () => {
     const apps = getApps();
     if (apps.length) await Promise.all(apps.map(deleteApp));
