@@ -16,9 +16,14 @@ export async function createTip(
     title: title,
     type: type,
     authorId: authorId,
+    tags: [],
+    ratings: [],
     description: description,
-    content: content,
+    upvotes: [],
+    downvotes: [],
     createdAt: Math.floor(Date.now() / 1000),
+    content: content,
+    comments: [],
   });
 
   return {
