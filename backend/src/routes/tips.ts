@@ -1,6 +1,6 @@
 import { Router } from "express";
 import DB from "../db/db";
-import { collection, getDocs } from "@firebase/firestore";
+import { collection, doc, getDocs, getDoc, deleteDoc } from "@firebase/firestore";
 import { createTip } from "../tips/createTip";
 
 const tipsRouter = Router();
@@ -24,6 +24,20 @@ tipsRouter.post("/", async (req, res) => {
   );
 
   res.send(ret);
+});
+
+tipsRouter.get("/:id", async (req, res) => {
+  const docRef = doc(DB, "tips", req.params.id);
+  const docSnapshot = await getDoc(docRef);
+  const ret = docSnapshot.data();
+
+  res.send(ret);
+});
+
+tipsRouter.delete("/:id", async (req, res) => {
+  const docRef = doc(DB, "tips", req.params.id);
+  const ret = await deleteDoc(docRef);
+  res.send({});
 });
 
 export default tipsRouter;
