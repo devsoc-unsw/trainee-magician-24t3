@@ -10,6 +10,7 @@ import {
 import { createTip } from "../tips/createTip";
 import { upvotePost } from "../tips/upvotePost";
 import { downvotePost } from "../tips/downvotePost";
+import { favouritePost } from "../tips/favouritePost";
 
 const tipsRouter = Router();
 
@@ -55,6 +56,11 @@ tipsRouter.put("/:userid/upvote", async (req, res) => {
 
 tipsRouter.put("/:userid/downvote", async (req, res) => {
   const ret = await downvotePost(req.params.userid, req.body.tipId, req.body.turnon);
+  res.send(ret);
+});
+
+tipsRouter.put("/:userid/favourite", async (req, res) => {
+  const ret = await favouritePost(req.params.userid, req.body.tipId, req.body.turnon);
   res.send(ret);
 });
 
