@@ -1,5 +1,6 @@
 import { getDoc, doc } from "@firebase/firestore";
 import DB from "../db/db";
+import HTTPError from 'http-errors';
 
 export interface FetchFavTipsReturn {
   tips: Tip[]
@@ -36,13 +37,17 @@ export async function fetchFavTips(
   const docRef = doc(DB, 'users', userId);
   const docSnapshot = await getDoc(docRef);
 
-  // error checking for docSnapshot to see if it exits?..?
+  if (!docSnapshot.exists()) {
+    throw HTTPError(400, 'UserId does not exist');
+  }
+
   const favouriteTipIds = docSnapshot.data().favouritePosts;
 
   const favTips:Tip[] = [];
   for (const tipId of favouriteTipIds) {
     const tipDocRef = doc(DB, 'tips', tipId);
     const tipDocSnapshot = await getDoc(tipDocRef);
+
     if (tipDocSnapshot.exists()) {
       const tipData = tipDocSnapshot.data();
       const tip = {

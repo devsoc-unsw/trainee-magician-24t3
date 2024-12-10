@@ -56,6 +56,8 @@ describe("Initial test", () => {
       tips: []
     });
 
+    const resError = await axios.get(`${SERVER}/users/abcdeINVALID/favourites`);
+    expect(resError).toStrictEqual({ status: 400, error: expect.any(String) });
     //add tests when favourite tip and create tip functions are implemented
 
     const delRes = await axios.delete(`${SERVER}/users/${resRegister.data.userId}`);
