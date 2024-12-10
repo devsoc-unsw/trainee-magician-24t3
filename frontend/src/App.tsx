@@ -12,7 +12,12 @@ function App() {
       <Route path="/login" element={<Login />} />
       {/* <Route path="/register" element={<Register />} /> */}
       <Route path="/tip" element={<Tip />} />
-      <Route path="/grid-card" element={<GridCard title="Example Title Example Title Example Title " tags={["ipsum", "lorem"]} rating="3.5" description="Study shows that everyone who drinks water everyday dies in the end." />} />
+      <Route path="/grid-card" element={<GridCard 
+        title="Example Title Example Title Example Title " 
+        tags={["ipsum", "lorem"]} 
+        rating={3.5} 
+        description="Study shows that everyone who drinks water everyday dies in the end." 
+      />} />
 
     </Routes>
   );
