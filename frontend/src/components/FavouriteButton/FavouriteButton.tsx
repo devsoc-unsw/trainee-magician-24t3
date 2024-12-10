@@ -2,26 +2,26 @@ import InactiveFavouriteImage from "./favourite_icon_inactive.png";
 import HoverFavouriteImage from "./favourite_icon_hover.png";
 import ActiveFavouriteImage from "./favourite_icon_active.png";
 import styles from "./index.module.css";
-import { useState } from "react";
 
 interface FavouriteButtonProps {
-  hasFavourited?: boolean;
+  hasFavourited: boolean;
+  onFavourite: (isFavouriting: boolean) => void;
 }
 
-const FavouriteButton = (props: FavouriteButtonProps) => {
-  const [isFavourited, setFavouriteState] = useState(
-    props.hasFavourited ?? false,
-  );
-
-  const toggleFavourited = () => {
-    setFavouriteState(!isFavourited);
+const FavouriteButton = ({ hasFavourited, onFavourite }: FavouriteButtonProps) => {
+  const handleClick = () => {
+    onFavourite(!hasFavourited);
   };
 
   return (
-    <div className="flex flex-row items-center border border-green-400">
+    <div 
+      className={`flex flex-row items-center cursor-pointer ${styles.favouriteContainer}`}
+      onClick={handleClick}
+      data-favourited={hasFavourited}
+    >
       <span
         className={`ml-auto mr-0 text-lg font-semibold ${styles.favouriteText}`}
-        style={{ color: isFavourited ? "#FFDD43" : "#555555" }}
+        style={{ color: hasFavourited ? "#FFDD43" : "#555555" }}
       >
         Favourite
       </span>
@@ -30,20 +30,17 @@ const FavouriteButton = (props: FavouriteButtonProps) => {
           src={InactiveFavouriteImage}
           alt="favourite icon"
           className={`mr-0 ${styles.favouriteButton}`}
-          onClick={toggleFavourited}
         />
         <img
           src={ActiveFavouriteImage}
           alt="favourite icon"
           className={`mr-0 ${styles.favouriteButton} ${styles.overlayFavouriteButton}`}
-          style={{ opacity: isFavourited ? 1 : 0 }}
-          onClick={toggleFavourited}
+          style={{ opacity: hasFavourited ? 1 : 0 }}
         />
         <img
           src={HoverFavouriteImage}
           alt="favourite icon"
           className={`mr-0 ${styles.favouriteButton} ${styles.overlayFavouriteButton} ${styles.hoverFavouriteButton}`}
-          onClick={toggleFavourited}
         />
       </div>
     </div>

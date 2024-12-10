@@ -1,30 +1,31 @@
 import Date from "../Date"
+import DefaultCharacter from "./default_character.jpg"
 
-interface CommentObj {
+interface CommentBoxProps {
     profilePic?: string;
     name: string;
     text: string;
     date: Date;
-};
+}
 
-const CommentBox = (props: CommentObj) => {
-
+const CommentBox = ({ profilePic, name, text, date }: CommentBoxProps) => {
     return (
-        <div className="border border-black p-5 flex items-start space-x-4 rounded-[26px] mb-6">
+        <div className="mb-6 flex items-start space-x-4 rounded-[26px] border border-black p-5">
             <div className="flex flex-col items-center">
                 <img
-                    src={props.profilePic || "https://i.pinimg.com/550x/18/b9/ff/18b9ffb2a8a791d50213a9d595c4dd52.jpg"}
-                    className="w-12 h-12 rounded-full mb-2"
+                    src={profilePic || DefaultCharacter}
+                    alt={`${name}'s profile`}
+                    className="mb-2 h-12 w-12 rounded-full object-cover"
                 />
-                <h3 className="underline text-base">{props.name}</h3>
+                <h3 className="text-base underline">{name}</h3>
                 <div className="flex">
                     <h3 className="text-base">Posted&nbsp;</h3>
-                    <Date date={props.date} />
+                    <Date date={date} />
                 </div>
             </div>
             
-            <div>
-                <p className="text-xl">{props.text}</p>
+            <div className="flex-1">
+                <p className="text-xl break-words">{text}</p>
             </div>
         </div>
     );
