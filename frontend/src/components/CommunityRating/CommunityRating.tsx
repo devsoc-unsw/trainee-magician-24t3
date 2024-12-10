@@ -22,7 +22,7 @@ const CommunityRating = ({
   };
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <>
       {showText && (
         <h3 className="text-lg font-semibold text-[#555555]">
           Community Rating
@@ -47,7 +47,7 @@ const CommunityRating = ({
           />
         ))}
       </div>
-    </div>
+    </>
   );
 };
 
