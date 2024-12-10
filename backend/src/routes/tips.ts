@@ -9,6 +9,7 @@ import {
 } from "@firebase/firestore";
 import { createTip } from "../tips/createTip";
 import { upvotePost } from "../tips/upvotePost";
+import { downvotePost } from "../tips/downvotePost";
 
 const tipsRouter = Router();
 
@@ -48,8 +49,12 @@ tipsRouter.delete("/:id", async (req, res) => {
 });
 
 tipsRouter.put("/:userid/upvote", async (req, res) => {
-  console.log(req.params.userid, req.body.tipId, req.body.turnon);
   const ret = await upvotePost(req.params.userid, req.body.tipId, req.body.turnon);
+  res.send(ret);
+});
+
+tipsRouter.put("/:userid/downvote", async (req, res) => {
+  const ret = await downvotePost(req.params.userid, req.body.tipId, req.body.turnon);
   res.send(ret);
 });
 
