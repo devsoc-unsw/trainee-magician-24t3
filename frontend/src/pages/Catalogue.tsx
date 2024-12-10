@@ -1,7 +1,7 @@
 import { useState } from "react";
 import GridCard from "../components/GridCard";
 import WelcomeIcon from "../components/WelcomeIcon";
-
+import logo from "../assets/logo.svg";
 // Mock data for tips
 const lifeTips = Array(9).fill({
   title: "Drink water everyday",
@@ -21,46 +21,45 @@ export const Catalogue = () => {
   const [isLifeMode, setIsLifeMode] = useState(true);
 
   return (
-    <div className={`min-h-screen ${!isLifeMode ? "bg-[#222222]" : "bg-white"}`}>
+    <div
+      className={`min-h-screen ${!isLifeMode ? "bg-[#222222]" : "bg-white"}`}
+    >
       {/* Header */}
       <div className="flex items-center px-8 py-4">
         {/* Left section */}
         <div className="w-1/4">
-          <img src="/logo.png" alt="Logo" className="h-12" />
+          <img src={logo} alt="Logo" className="h-12" />
         </div>
 
         {/* Center section */}
         <div className="flex w-1/2 justify-center">
           {/* Theme Toggle */}
-          <div className={`
-            relative h-10 w-32 cursor-pointer rounded-full 
-            border border-gray-300 p-1
-            ${!isLifeMode ? 'border-gray-700 bg-[#222222]' : 'bg-white'}
-          `}
-          onClick={() => setIsLifeMode(!isLifeMode)}
+          <div
+            className={`relative h-10 w-32 cursor-pointer overflow-hidden rounded-lg border border-black p-1 shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] ${
+              isLifeMode ? "bg-[#63C779]" : "bg-[#F52A2A]"
+            }`}
+            onClick={() => setIsLifeMode(!isLifeMode)}
           >
-            {/* Pill Background */}
-            <div className={`
-              absolute left-0 top-0 h-full w-1/2
-              transform rounded-full transition-transform duration-300 ease-in-out
-              ${!isLifeMode ? 'translate-x-full bg-[#F52A2A]' : 'translate-x-0 bg-[#63C779]'}
-            `} />
+            {/* Overlay */}
+            <div
+              className={`absolute left-0 top-0 z-10 h-full w-1/2 transform rounded-[6px] border border-black bg-white transition-transform duration-300 ease-in-out ${
+                !isLifeMode ? "translate-x-full" : "translate-x-0"
+              }`}
+            />
 
             {/* Text Container */}
-            <div className="relative z-10 flex h-full">
-              {/* LIFE Text */}
-              <div className={`
-                flex w-1/2 items-center justify-center text-sm font-bold
-                ${isLifeMode ? 'text-white' : 'text-[#63C779]'}
-              `}>
-                LIFE
-              </div>
+            <div className="relative flex h-full">
               {/* DEATH Text */}
-              <div className={`
-                flex w-1/2 items-center justify-center text-sm font-bold
-                ${!isLifeMode ? 'text-white' : 'text-[#F52A2A]'}
-              `}>
+              <div
+                className={`flex w-1/2 items-center justify-center text-sm font-bold`}
+              >
                 DEATH
+              </div>
+              {/* LIFE Text */}
+              <div
+                className={`flex w-1/2 items-center justify-center text-sm font-bold`}
+              >
+                LIFE
               </div>
             </div>
           </div>
@@ -81,22 +80,19 @@ export const Catalogue = () => {
           <input
             type="text"
             placeholder="Search..."
-            className={`
-              w-full rounded-full border px-6 py-3 outline-none
-              ${!isLifeMode 
-                ? 'border-gray-700 bg-[#222222] text-white placeholder-gray-500' 
-                : 'border-gray-300 bg-white text-black placeholder-gray-400'
-              }
-            `}
+            className={`w-full rounded-lg border px-6 py-3 outline-none ${
+              !isLifeMode
+                ? "border-gray-700 bg-[#222222] text-white placeholder-gray-500"
+                : "border-gray-300 bg-white text-black placeholder-gray-400"
+            } `}
           />
           <button className="absolute right-4 top-1/2 -translate-y-1/2">
             🔍
           </button>
         </div>
-        <button className={`
-          ml-4 mt-2 text-left text-sm hover:underline
-          ${!isLifeMode ? 'text-gray-400' : 'text-gray-500'}
-        `}>
+        <button
+          className={`ml-4 mt-2 text-left text-sm hover:underline ${!isLifeMode ? "text-gray-400" : "text-gray-500"} `}
+        >
           Add Filter
         </button>
       </div>
@@ -105,10 +101,10 @@ export const Catalogue = () => {
       <div className="mx-auto max-w-7xl px-8">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {(isLifeMode ? lifeTips : deathTips).map((tip, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="cursor-pointer transition-transform hover:-translate-y-1"
-              onClick={() => window.location.href = '/tip'}
+              onClick={() => (window.location.href = "/tip")}
             >
               <GridCard
                 title={tip.title}
