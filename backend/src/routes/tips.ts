@@ -8,6 +8,7 @@ import {
   deleteDoc,
 } from "@firebase/firestore";
 import { createTip } from "../tips/createTip";
+import { upvotePost } from "../tips/upvotePost";
 
 const tipsRouter = Router();
 
@@ -44,6 +45,12 @@ tipsRouter.delete("/:id", async (req, res) => {
   const docRef = doc(DB, "tips", req.params.id);
   const ret = await deleteDoc(docRef);
   res.send({});
+});
+
+tipsRouter.put("/:userid/upvote", async (req, res) => {
+  console.log(req.params.userid, req.body.tipId, req.body.turnon);
+  const ret = await upvotePost(req.params.userid, req.body.tipId, req.body.turnon);
+  res.send(ret);
 });
 
 export default tipsRouter;
