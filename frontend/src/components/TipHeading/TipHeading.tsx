@@ -2,13 +2,16 @@ import { ReactNode } from "react";
 
 interface TipHeadingProps {
   children?: ReactNode;
+  isDeath?: boolean;
 }
 
-const TipHeading = (props: TipHeadingProps) => {
+const TipHeading = ({ children, isDeath }: TipHeadingProps) => {
   return (
     <div>
-      <h1 className="text-5xl font-bold text-[#63C779]">
-        {(props.children as String).toUpperCase()}
+      <h1
+        className={`text-5xl font-bold ${isDeath ? "text-[#F52A2A]" : "text-[#63C779]"}`}
+      >
+        {(children as string).toUpperCase()}
       </h1>
     </div>
   );

@@ -1,7 +1,8 @@
-import { useState } from "react";
 import GridCard from "../components/GridCard";
 import WelcomeIcon from "../components/WelcomeIcon";
 import logo from "../assets/logo.svg";
+import { useThemeContext } from "../contexts/ThemeContext";
+import { themeConfig } from "../config/theme.config";
 // Mock data for tips
 const lifeTips = Array(9).fill({
   title: "Drink water everyday",
@@ -18,12 +19,11 @@ const deathTips = Array(9).fill({
 });
 
 export const Catalogue = () => {
-  const [isLifeMode, setIsLifeMode] = useState(true);
+  const { isDeath, toggleTheme } = useThemeContext();
+  const theme = themeConfig[isDeath ? "death" : "life"];
 
   return (
-    <div
-      className={`min-h-screen ${!isLifeMode ? "bg-[#222222]" : "bg-white"}`}
-    >
+    <div className={`min-h-screen ${theme.background}`}>
       {/* Header */}
       <div className="flex items-center px-8 py-4">
         {/* Left section */}
@@ -36,29 +36,25 @@ export const Catalogue = () => {
           {/* Theme Toggle */}
           <div
             className={`relative h-10 w-32 cursor-pointer overflow-hidden rounded-lg border border-black p-1 shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] ${
-              isLifeMode ? "bg-[#63C779]" : "bg-[#F52A2A]"
+              !isDeath ? "bg-[#63C779]" : "bg-[#F52A2A]"
             }`}
-            onClick={() => setIsLifeMode(!isLifeMode)}
+            onClick={toggleTheme}
           >
             {/* Overlay */}
             <div
               className={`absolute left-0 top-0 z-10 h-full w-1/2 transform rounded-[6px] border border-black bg-white transition-transform duration-300 ease-in-out ${
-                !isLifeMode ? "translate-x-full" : "translate-x-0"
+                isDeath ? "translate-x-full" : "translate-x-0"
               }`}
             />
 
             {/* Text Container */}
             <div className="relative flex h-full">
               {/* DEATH Text */}
-              <div
-                className={`flex w-1/2 items-center justify-center text-sm font-bold`}
-              >
+              <div className="flex w-1/2 items-center justify-center text-sm font-bold">
                 DEATH
               </div>
               {/* LIFE Text */}
-              <div
-                className={`flex w-1/2 items-center justify-center text-sm font-bold`}
-              >
+              <div className="flex w-1/2 items-center justify-center text-sm font-bold">
                 LIFE
               </div>
             </div>
@@ -80,18 +76,14 @@ export const Catalogue = () => {
           <input
             type="text"
             placeholder="Search..."
-            className={`w-full rounded-lg border px-6 py-3 outline-none ${
-              !isLifeMode
-                ? "border-gray-700 bg-[#222222] text-white placeholder-gray-500"
-                : "border-gray-300 bg-white text-black placeholder-gray-400"
-            } `}
+            className={`w-full rounded-lg border px-6 py-3 outline-none ${theme.background} ${theme.text} ${theme.placeholder} ${theme.borderColor}`}
           />
           <button className="absolute right-4 top-1/2 -translate-y-1/2">
             🔍
           </button>
         </div>
         <button
-          className={`ml-4 mt-2 text-left text-sm hover:underline ${!isLifeMode ? "text-gray-400" : "text-gray-500"} `}
+          className={`ml-4 mt-2 text-left text-sm hover:underline ${theme.secondaryText}`}
         >
           Add Filter
         </button>
@@ -100,7 +92,7 @@ export const Catalogue = () => {
       {/* Grid Layout */}
       <div className="mx-auto max-w-7xl px-8">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {(isLifeMode ? lifeTips : deathTips).map((tip, index) => (
+          {(isDeath ? deathTips : lifeTips).map((tip, index) => (
             <div
               key={index}
               className="cursor-pointer transition-transform hover:-translate-y-1"
@@ -111,7 +103,7 @@ export const Catalogue = () => {
                 tags={tip.tags}
                 rating={tip.rating}
                 description={tip.description}
-                isDeath={!isLifeMode}
+                isDeath={isDeath}
               />
             </div>
           ))}

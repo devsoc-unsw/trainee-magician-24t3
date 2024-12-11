@@ -1,15 +1,21 @@
 import { useState } from "react";
 import styles from "./index.module.css";
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
+import { themeConfig } from "../../config/theme.config";
 
-const LoginCard = () => {
+interface LoginCardProps {
+  isDeath?: boolean;
+}
+
+const LoginCard = ({ isDeath }: LoginCardProps) => {
   const [isSignUp, setIsSignUp] = useState(false);
+  const theme = themeConfig[isDeath ? "death" : "life"];
 
   return (
-    <div className="relative flex h-[425px] w-[700px] overflow-hidden rounded-3xl bg-white shadow-xl">
+    <div className={`relative flex h-[425px] w-[700px] overflow-hidden rounded-3xl ${theme.background} shadow-xl`}>
       {/* Sign In Form */}
       <div className="h-full w-6/12 p-12">
-        <h1 className="mb-8 text-3xl font-light text-gray-900">Sign In</h1>
+        <h1 className={`mb-8 text-3xl font-light ${theme.text}`}>Sign In</h1>
         <form className="flex flex-col gap-14">
           <input className={styles.input} placeholder="Email" type="email" />
           <input
@@ -23,7 +29,7 @@ const LoginCard = () => {
 
       {/* Sign Up Form */}
       <div className="h-full w-6/12 p-12">
-        <h1 className="mb-8 text-3xl font-light text-gray-900">Sign Up</h1>
+        <h1 className={`mb-8 text-3xl font-light ${theme.text}`}>Sign Up</h1>
         <form className="flex flex-col gap-6">
           <input className={styles.input} placeholder="Email" type="email" />
           <input
@@ -57,7 +63,7 @@ const LoginCard = () => {
           boxShadow: "-5px 0 15px rgba(0, 0, 0, 0.1)",
         }}
         transition={{ type: "spring", duration: 0.7, bounce: 0 }}
-        className="absolute top-0 h-full w-6/12 bg-black px-4 py-12 text-white"
+        className={`absolute top-0 h-full w-6/12 ${isDeath ? "bg-[#F52A2A]" : "bg-[#63C779]"} px-4 py-12 text-white`}
       >
         <MotionConfig transition={{ duration: 0.6 }}>
           <AnimatePresence mode="popLayout">

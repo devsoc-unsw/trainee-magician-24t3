@@ -1,5 +1,6 @@
-import DownvoteImage from "./DownvoteIcon.png";
-import UpvoteImage from "./UpvoteIcon (2).png";
+import { BiSolidUpArrow, BiSolidDownArrow } from "react-icons/bi";
+import { useThemeContext } from "../../contexts/ThemeContext";
+import { themeConfig } from "../../config/theme.config";
 
 interface UpvoteDownvoteProps {
   upvotes: number;
@@ -18,6 +19,9 @@ const UpvoteDownvote = ({
   onUpvote,
   onDownvote,
 }: UpvoteDownvoteProps) => {
+  const { isDeath } = useThemeContext();
+  const theme = themeConfig[isDeath ? "death" : "life"];
+
   const handleUpvote = () => {
     if (hasDownvoted && onDownvote) {
       onDownvote(false);
@@ -42,18 +46,22 @@ const UpvoteDownvote = ({
         onClick={handleUpvote}
         className="transition-transform hover:scale-110"
       >
-        <img src={UpvoteImage} alt="Upvote" className="mr-2 h-7 w-7" />
+        <BiSolidUpArrow 
+          className={`mr-2 h-7 w-7 ${hasUpvoted ? theme.accentText : theme.secondaryText}`}
+        />
       </button>
-      <h3 className={`mr-4 ${hasUpvoted ? "text-green-500" : ""}`}>
+      <h3 className={`mr-4 ${hasUpvoted ? theme.accentText : theme.secondaryText}`}>
         {upvotes}
       </h3>
       <button
         onClick={handleDownvote}
         className="transition-transform hover:scale-110"
       >
-        <img src={DownvoteImage} alt="Downvote" className="mr-2 h-7 w-7" />
+        <BiSolidDownArrow 
+          className={`mr-2 h-7 w-7 ${hasDownvoted ? theme.accentText : theme.secondaryText}`}
+        />
       </button>
-      <h3 className={`mr-4 ${hasDownvoted ? "text-red-500" : ""}`}>
+      <h3 className={`mr-4 ${hasDownvoted ? theme.accentText : theme.secondaryText}`}>
         {downvotes}
       </h3>
     </div>

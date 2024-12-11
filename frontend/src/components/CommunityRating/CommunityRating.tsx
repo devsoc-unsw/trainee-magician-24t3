@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { range } from "../../utils/range";
+import { useThemeContext } from "../../contexts/ThemeContext";
+import { themeConfig } from "../../config/theme.config";
 
 interface CommunityRatingProps {
   initialRating?: number;
@@ -14,6 +16,8 @@ const CommunityRating = ({
   readonly = false,
   showText = true,
 }: CommunityRatingProps) => {
+  const { isDeath } = useThemeContext();
+  const theme = themeConfig[isDeath ? "death" : "life"];
   const [hoveredRating, setHoveredRating] = useState<number | null>(null);
 
   const handleRatingClick = (selectedRating: number) => {
@@ -24,7 +28,7 @@ const CommunityRating = ({
   return (
     <>
       {showText && (
-        <h3 className="text-lg font-semibold text-[#555555]">
+        <h3 className={`text-lg font-semibold ${theme.secondaryText}`}>
           Community Rating
         </h3>
       )}
@@ -32,14 +36,16 @@ const CommunityRating = ({
         {range(1, 5).map((circle) => (
           <button
             key={circle}
-            className={`h-5 w-5 rounded-full border border-black transition-all duration-200 ${!readonly && "hover:scale-110"} ${
+            className={`h-5 w-5 rounded-full border border-black transition-all duration-200 ${
+              !readonly && "hover:scale-110"
+            } ${
               hoveredRating !== null
                 ? hoveredRating >= circle
-                  ? "bg-[#FFDD43]" // Gold for hover state
-                  : "bg-white"
+                  ? theme.rating.hover
+                  : theme.rating.inactive
                 : initialRating >= circle
-                  ? "bg-[#63C779]" // Green for community rating
-                  : "bg-white"
+                ? theme.rating.active
+                : theme.rating.inactive
             } ${readonly ? "cursor-default" : "cursor-pointer"}`}
             onMouseEnter={() => !readonly && setHoveredRating(circle)}
             onMouseLeave={() => !readonly && setHoveredRating(null)}

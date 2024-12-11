@@ -7,6 +7,8 @@ import PosterDetails from "../components/PosterDetails";
 import UpvoteDownvote from "../components/UpvoteDownvote";
 import TipTags from "../components/TipTags";
 import FavouriteButton from "../components/FavouriteButton";
+import { useThemeContext } from "../contexts/ThemeContext";
+import { themeConfig } from "../config/theme.config";
 
 interface Rating {
   value: 1 | 2 | 3 | 4 | 5;
@@ -161,6 +163,8 @@ const TipContent = ({
   ratings,
   comments,
 }: TipProps) => {
+  const { isDeath } = useThemeContext();
+  const theme = themeConfig[isDeath ? "death" : "life"];
   const [localUpvotes, setLocalUpvotes] = useState(upvotes);
   const [localDownvotes, setLocalDownvotes] = useState(downvotes);
   const [localRatings, setLocalRatings] = useState<Rating[]>(ratings);
@@ -254,7 +258,7 @@ const TipContent = ({
   };
 
   return (
-    <div id="tip-page-container" className="flex h-full flex-col items-center">
+    <div className={`flex flex-col items-center ${theme.background} ${theme.text}`}>
       <div
         id="tip-header-container"
         className="flex w-full max-w-[80ch] justify-between px-8 py-4"
@@ -274,7 +278,7 @@ const TipContent = ({
       <div id="tip-post-container" className="flex max-w-[70ch] flex-col">
         <div className="flex">
           <div className="ml-0 mr-auto inline-block w-4/5">
-            <TipHeading>{title}</TipHeading>
+            <TipHeading isDeath={isDeath}>{title}</TipHeading>
           </div>
           <div className="my-auto ml-auto mr-0 inline-block w-1/5">
             <CommunityRating
@@ -320,7 +324,7 @@ const TipContent = ({
 
       <div className="flex max-w-[70ch] flex-col justify-center">
         <div className="mb-8 ml-0 mr-auto inline-block w-4/5">
-          <TipHeading>COMMENTS</TipHeading>
+          <TipHeading isDeath={isDeath}>COMMENTS</TipHeading>
         </div>
 
         <div className="mb-6 rounded-[26px]">
@@ -328,16 +332,16 @@ const TipContent = ({
             placeholder="Add a comment"
             value={newCommentText}
             onChange={(e) => setNewCommentText(e.target.value)}
-            className="mb-4 flex h-20 w-full rounded-[26px] border border-black p-5"
+            className={`mb-4 flex h-20 w-full rounded-[26px] border p-5 ${theme.borderColor} ${theme.background} ${theme.text} ${theme.placeholder}`}
             disabled={!currentUser}
           />
           <button
             onClick={handleAddComment}
             disabled={!currentUser || !newCommentText.trim()}
-            className={`ml-auto flex rounded-[26px] border border-black pb-2 pl-5 pr-5 pt-2 text-white ${
+            className={`ml-auto flex rounded-[26px] border pb-2 pl-5 pr-5 pt-2 text-white ${
               !currentUser || !newCommentText.trim()
                 ? "cursor-not-allowed bg-gray-400"
-                : "bg-[#63C779] hover:bg-[#518004]"
+                : `${theme.accent} hover:opacity-80`
             }`}
           >
             Comment

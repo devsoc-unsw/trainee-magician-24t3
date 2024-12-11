@@ -1,15 +1,23 @@
+import { useThemeContext } from "../../contexts/ThemeContext";
+import { themeConfig } from "../../config/theme.config";
+
 interface WelcomeIconProps {
   profilePic?: string;
   firstName: string;
 }
 
 const WelcomeIcon = (props: WelcomeIconProps) => {
+  const { isDeath } = useThemeContext();
+  const theme = themeConfig[isDeath ? "death" : "life"];
+
   return (
     <div className="flex">
       <div className="mr-4">
-        <span className="text-lg">Welcome, {props.firstName}</span>
+        <span className={`text-lg ${theme.text}`}>Welcome, {props.firstName}</span>
         <br />
-        <span className="text-sm text-gray-500 underline">See profile</span>
+        <span className={`text-sm ${theme.secondaryText} underline`}>
+          See profile
+        </span>
       </div>
       <img
         src={
