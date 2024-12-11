@@ -51,22 +51,38 @@ tipsRouter.delete("/:id", async (req, res) => {
 });
 
 tipsRouter.put("/:userid/upvote", async (req, res) => {
-  const ret = await upvotePost(req.params.userid, req.body.tipId, req.body.turnon);
+  const ret = await upvotePost(
+    req.params.userid,
+    req.body.tipId,
+    req.body.turnon
+  );
   res.send(ret);
 });
 
 tipsRouter.put("/:userid/downvote", async (req, res) => {
-  const ret = await downvotePost(req.params.userid, req.body.tipId, req.body.turnon);
+  const ret = await downvotePost(
+    req.params.userid,
+    req.body.tipId,
+    req.body.turnon
+  );
   res.send(ret);
 });
 
 tipsRouter.put("/:userid/favourite", async (req, res) => {
-  const ret = await favouritePost(req.params.userid, req.body.tipId, req.body.turnon);
+  const ret = await favouritePost(
+    req.params.userid,
+    req.body.tipId,
+    req.body.turnon
+  );
   res.send(ret);
 });
 
 tipsRouter.post("/:userid/comment", async (req, res) => {
-  const ret = await commentPost(req.params.userid, req.body.tipId, req.body.content);
+  const ret = await commentPost(
+    req.params.userid,
+    req.body.tipId,
+    req.body.content
+  );
   res.send(ret);
 });
 

@@ -10,9 +10,11 @@ export async function favouritePost(
   let docSnapshot = await getDoc(docRef);
   let docData = docSnapshot.data() as DocumentData;
 
-  const updatedArray = docData.favouritePosts.filter((id: string) => id !== tipId);
+  const updatedArray = docData.favouritePosts.filter(
+    (id: string) => id !== tipId
+  );
   if (turnon) {
-    updatedArray.push(tipId); 
+    updatedArray.push(tipId);
   }
 
   await updateDoc(docRef, { favouritePosts: updatedArray });

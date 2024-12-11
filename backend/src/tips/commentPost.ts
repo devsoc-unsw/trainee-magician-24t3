@@ -14,7 +14,7 @@ export async function commentPost(
   updatedArray.push({
     authorId: userId,
     content: content,
-    createdAt: Math.floor(Date.now() / 1000)
+    createdAt: Math.floor(Date.now() / 1000),
   });
 
   await updateDoc(docRef, { comments: updatedArray });

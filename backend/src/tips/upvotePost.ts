@@ -3,8 +3,8 @@ import DB from "../db/db";
 import { downvotePost } from "./downvotePost";
 
 export interface UpvotePostReturn {
-  upvotes: number,
-  downvotes: number
+  upvotes: number;
+  downvotes: number;
 }
 
 export async function upvotePost(
@@ -18,7 +18,7 @@ export async function upvotePost(
 
   const updatedArray = docData.upvotes.filter((id: string) => id !== userId);
   if (turnon) {
-    updatedArray.push(userId); 
+    updatedArray.push(userId);
     // attempt to remove downvote if user upvotes post
     downvotePost(userId, tipId, false);
   }
@@ -28,5 +28,8 @@ export async function upvotePost(
   docSnapshot = await getDoc(docRef);
   docData = docSnapshot.data() as DocumentData;
 
-  return { upvotes: docData.upvotes.length, downvotes: docData.downvotes.length };
+  return {
+    upvotes: docData.upvotes.length,
+    downvotes: docData.downvotes.length,
+  };
 }
