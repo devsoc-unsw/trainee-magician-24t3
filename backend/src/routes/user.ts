@@ -33,12 +33,15 @@ userRouter.post("/register", async (req, res) => {
 });
 
 userRouter.post("/login", async (req, res) => {
-  const ret = await login(
-    req.body.email,
-    req.body.password,
-  );
-
-  res.send(ret);
+  try {
+    const ret = await login(
+      req.body.email,
+      req.body.password,
+    );
+    res.send(ret);
+  } catch (e) {
+    return res.status(400).json({ error: e.message});
+  }
 });
 
 userRouter.delete("/:id", async (req, res) => {

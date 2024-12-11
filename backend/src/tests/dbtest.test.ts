@@ -61,6 +61,16 @@ describe("Initial test", () => {
       userId: expect.any(String),
     });
 
+    // testing wrong password
+    try {
+      await axios.post(`${SERVER}/users/login`, {
+        email: "ewell.ortiz@ethereal.email",
+        password: "wrongPassword",
+      });
+    } catch (e) {
+      expect(e.response.status).toStrictEqual(400);
+    }
+
     const delRes = await axios.delete(`${SERVER}/users/${res.data.userId}`);
     expect(delRes.data).toStrictEqual({});
   });
