@@ -38,7 +38,7 @@ export async function fetchFavTips(
   const docSnapshot = await getDoc(docRef);
 
   if (!docSnapshot.exists()) {
-    throw HTTPError(400, 'UserId does not exist');
+    throw new Error('UserId does not exist');
   }
 
   const favouriteTipIds = docSnapshot.data().favouritePosts;

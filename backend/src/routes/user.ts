@@ -6,7 +6,7 @@ import {
   DocumentReference,
   getDoc,
 } from "@firebase/firestore";
-import { query, Router, Request, Response } from "express";
+import { query, Router } from "express";
 import DB from "../db/db";
 import { register } from "../user/register";
 import { fetchFavTips } from "../user/fetchFavTips";
@@ -21,12 +21,12 @@ userRouter.get("/:id", (req, res) => {
   });
 });
 
-userRouter.get("/:id/favourites", async (req: Request, res: Response) => {
+userRouter.get("/:id/favourites", async (req, res) => {
   try {
     const ret = await fetchFavTips(req.params.id);
     res.send(ret);
   } catch (e) {
-    return res.status(400).json({ error: (e as Error).message });
+    return res.status(400).json({ error: e.message });
   }
 });
 
