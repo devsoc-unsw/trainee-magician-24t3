@@ -17,7 +17,9 @@ export async function fetchUserInfo(
   const docSnapshot = await getDoc(docRef);
   const userInfo = docSnapshot.data();
 
- // error checking?
+  if (!docSnapshot.exists()) {
+    throw new Error('UserId does not exist');
+  }
 
   return {
     firstName: userInfo.firstName,

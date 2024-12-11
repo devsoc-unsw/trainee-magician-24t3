@@ -67,6 +67,13 @@ describe("Initial test", () => {
       email: "ewell.ortiz@ethereal.email"
     });
 
+    // testing invalid userId
+    try {
+      await axios.get(`${SERVER}/users/abcdeINVALID`);
+    } catch (e) {
+      expect(e.response.status).toStrictEqual(400);
+    }
+
     const delRes = await axios.delete(`${SERVER}/users/${resRegister.data.userId}`);
     expect(delRes.data).toStrictEqual({});
   });

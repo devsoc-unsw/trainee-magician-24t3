@@ -14,9 +14,12 @@ import { fetchUserInfo } from "../user/fetchUserInfo";
 const userRouter = Router();
 
 userRouter.get("/:id", async (req, res) => {
-  const ret = await fetchUserInfo(req.params.id);
-
-  res.send(ret);
+  try {
+    const ret = await fetchUserInfo(req.params.id);
+    res.send(ret);
+  } catch (e) {
+    return res.status(400).json({ error: e.message});
+  }
 });
 
 
