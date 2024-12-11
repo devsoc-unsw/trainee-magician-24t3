@@ -1,6 +1,4 @@
-import InactiveFavouriteImage from "./favourite_icon_inactive.png";
-import HoverFavouriteImage from "./favourite_icon_hover.png";
-import ActiveFavouriteImage from "./favourite_icon_active.png";
+import { AiFillStar } from "react-icons/ai";
 import styles from "./index.module.css";
 
 interface FavouriteButtonProps {
@@ -8,41 +6,31 @@ interface FavouriteButtonProps {
   onFavourite: (isFavouriting: boolean) => void;
 }
 
-const FavouriteButton = ({ hasFavourited, onFavourite }: FavouriteButtonProps) => {
+const FavouriteButton = ({
+  hasFavourited,
+  onFavourite,
+}: FavouriteButtonProps) => {
   const handleClick = () => {
     onFavourite(!hasFavourited);
   };
 
   return (
-    <div 
-      className={`flex flex-row items-center cursor-pointer ${styles.favouriteContainer}`}
+    <div
+      className={`flex cursor-pointer flex-row items-center ${styles.favouriteContainer}`}
       onClick={handleClick}
       data-favourited={hasFavourited}
     >
       <span
-        className={`ml-auto mr-0 text-lg font-semibold ${styles.favouriteText}`}
-        style={{ color: hasFavourited ? "#FFDD43" : "#555555" }}
+        className={`ml-auto mr-2 text-lg font-semibold ${styles.favouriteText} ${hasFavourited ? "text-[#FFDD43]" : "text-gray-500"}`}
       >
         Favourite
       </span>
-      <div className={styles.imageBox}>
-        <img
-          src={InactiveFavouriteImage}
-          alt="favourite icon"
-          className={`mr-0 ${styles.favouriteButton}`}
-        />
-        <img
-          src={ActiveFavouriteImage}
-          alt="favourite icon"
-          className={`mr-0 ${styles.favouriteButton} ${styles.overlayFavouriteButton}`}
-          style={{ opacity: hasFavourited ? 1 : 0 }}
-        />
-        <img
-          src={HoverFavouriteImage}
-          alt="favourite icon"
-          className={`mr-0 ${styles.favouriteButton} ${styles.overlayFavouriteButton} ${styles.hoverFavouriteButton}`}
-        />
-      </div>
+      <AiFillStar
+        className={`h-8 w-8 transition-colors duration-200`}
+        style={{
+          color: hasFavourited ? "#FFDD43" : "#6b7280",
+        }}
+      />
     </div>
   );
 };
