@@ -43,6 +43,38 @@ describe("Initial test", () => {
     expect(delRes.data).toStrictEqual({});
   });
 
+  test("Test user login", async () => {
+    // Create user
+    await axios.post(`${SERVER}/users/register`, {
+      email: "ewell.ortiz@ethereal.email",
+      password: "FZKJA3Sfk3KAz7MDRg",
+      firstName: "Ewell",
+      lastName: "Ortiz",
+    });
+
+    const res = await axios.post(`${SERVER}/users/login`, {
+      email: "ewell.ortiz@ethereal.email",
+      password: "FZKJA3Sfk3KAz7MDRg",
+    });
+
+    expect(res.data).toStrictEqual({
+      userId: expect.any(String),
+    });
+
+    // testing wrong password
+    try {
+      await axios.post(`${SERVER}/users/login`, {
+        email: "ewell.ortiz@ethereal.email",
+        password: "wrongPassword",
+      });
+    } catch (e) {
+      expect(e.response.status).toStrictEqual(400);
+    }
+
+    const delRes = await axios.delete(`${SERVER}/users/${res.data.userId}`);
+    expect(delRes.data).toStrictEqual({});
+  });
+
   afterAll(async () => {
     const apps = getApps();
     if (apps.length) await Promise.all(apps.map(deleteApp));

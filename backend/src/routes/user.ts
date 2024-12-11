@@ -9,6 +9,7 @@ import {
 import { query, Router } from "express";
 import DB from "../db/db";
 import { register } from "../user/register";
+import { login } from "../user/login";
 
 const userRouter = Router();
 
@@ -29,6 +30,18 @@ userRouter.post("/register", async (req, res) => {
   );
 
   res.send(ret);
+});
+
+userRouter.post("/login", async (req, res) => {
+  try {
+    const ret = await login(
+      req.body.email,
+      req.body.password,
+    );
+    res.send(ret);
+  } catch (e) {
+    return res.status(400).json({ error: e.message});
+  }
 });
 
 userRouter.delete("/:id", async (req, res) => {
