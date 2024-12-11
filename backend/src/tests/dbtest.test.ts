@@ -29,10 +29,10 @@ describe("Initial test", () => {
 
   test("testing creating a new user", async () => {
     const res = await axios.post(`${SERVER}/users/register`, {
-      email: "ewell.ortiz@ethereal.email",
-      password: "FZKJA3Sfk3KAz7MDRg",
-      firstName: "Ewell",
-      lastName: "Ortiz",
+      email: "test@example.com",
+      password: "test123",
+      firstName: "Test",
+      lastName: "User",
     });
 
     expect(res.data).toStrictEqual({

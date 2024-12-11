@@ -2,47 +2,162 @@ import { useState } from "react";
 import styles from "./index.module.css";
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { themeConfig } from "../../config/theme.config";
+import axios, { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginCardProps {
   isDeath?: boolean;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+console.log('API URL:', API_URL);
+
 const LoginCard = ({ isDeath }: LoginCardProps) => {
+  const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const theme = themeConfig[isDeath ? "death" : "life"];
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    firstName: '',
+    lastName: '',
+  });
+  const [error, setError] = useState('');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    console.log('Attempting login with:', formData);
+
+    try {
+      const response = await axios.post(`${API_URL}/users/login`, {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      console.log('Login successful:', response.data);
+      navigate('/');
+    } catch (err) {
+      const error = err as AxiosError<{error: string}>;
+      setError(error.response?.data?.error || 'Login failed');
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    console.log('Attempting registration with:', formData);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${API_URL}/users/register`, {
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+      });
+
+      console.log('Registration successful:', response.data);
+      setIsSignUp(false); // Switch to login form
+    } catch (err) {
+      const error = err as AxiosError<{error: string}>;
+      setError(error.response?.data?.error || 'Registration failed');
+    }
+  };
 
   return (
     <div className={`relative flex h-[425px] w-[700px] overflow-hidden rounded-3xl ${theme.background} shadow-xl`}>
       {/* Sign In Form */}
       <div className="h-full w-6/12 p-12">
         <h1 className={`mb-8 text-3xl font-light ${theme.text}`}>Sign In</h1>
-        <form className="flex flex-col gap-14">
-          <input className={styles.input} placeholder="Email" type="email" />
+        <form className="flex flex-col gap-14" onSubmit={handleLogin}>
+          <input 
+            className={styles.input} 
+            placeholder="Email" 
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            required 
+          />
           <input
             className={styles.input}
             placeholder="Password"
             type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            required
           />
-          <button className={styles.submitButton}>Sign In</button>
+          <button type="submit" className={styles.submitButton}>Sign In</button>
         </form>
       </div>
 
       {/* Sign Up Form */}
       <div className="h-full w-6/12 p-12">
         <h1 className={`mb-8 text-3xl font-light ${theme.text}`}>Sign Up</h1>
-        <form className="flex flex-col gap-6">
-          <input className={styles.input} placeholder="Email" type="email" />
+        <form className="flex flex-col gap-6" onSubmit={handleSignUp}>
+          {error && <div className="text-red-500 text-sm">{error}</div>}
+          <input
+            className={styles.input}
+            placeholder="Email"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+          />
+          <input
+            className={styles.input}
+            placeholder="First Name"
+            type="text"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleInputChange}
+            required
+          />
+          <input
+            className={styles.input}
+            placeholder="Last Name"
+            type="text"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleInputChange}
+            required
+          />
           <input
             className={styles.input}
             placeholder="Password"
             type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            required
           />
           <input
             className={styles.input}
             placeholder="Confirm password"
             type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+            required
           />
-          <button className={styles.submitButton}>Create Account</button>
+          <button type="submit" className={styles.submitButton}>
+            Create Account
+          </button>
         </form>
       </div>
 

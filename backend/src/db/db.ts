@@ -12,7 +12,16 @@ const config = {
   measurementId: process.env.FB_MEASUREMENT_ID,
 };
 
+console.log("Firebase Config:", config);
+
 const app = initializeApp(config);
 const DB = getFirestore(app);
+
+// Also check if we can access Firestore
+try {
+  console.log("Firestore initialized:", DB.type);
+} catch (error) {
+  console.error("Firestore initialization error:", error);
+}
 
 export default DB;
