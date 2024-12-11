@@ -13,7 +13,6 @@ import { login } from "../user/login";
 
 const userRouter = Router();
 
-// not correct code
 userRouter.get("/:id", (async (req: Request, res: Response) => {
   try {
     const userDoc = await getDoc(doc(DB, "users", req.params.id));
@@ -22,10 +21,15 @@ userRouter.get("/:id", (async (req: Request, res: Response) => {
     }
     const userData = userDoc.data();
     res.json({
-      ...userData,
-      id: userDoc.id
+      id: userDoc.id,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      profileUrl: userData.profileUrl,
+      favouritePosts: userData.favouritePosts
     });
   } catch (error) {
+    console.error('Error fetching user:', error);
     res.status(500).json({ error: 'Failed to fetch user' });
   }
 }) as RequestHandler);
@@ -53,12 +57,18 @@ userRouter.post("/register", (async (req: Request, res: Response) => {
 
 userRouter.post("/login", (async (req: Request, res: Response) => {
   try {
-    const ret = await login(
-      req.body.email,
-      req.body.password,
-    );
-    res.send(ret);
+    console.log("Login attempt with:", req.body);
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    const ret = await login(email, password);
+    console.log("Login successful, returning:", ret);
+    res.json(ret);
   } catch (error: unknown) {
+    console.error("Login error:", error);
     if (error instanceof Error) {
       return res.status(400).json({ error: error.message });
     }

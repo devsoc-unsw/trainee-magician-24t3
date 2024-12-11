@@ -44,9 +44,15 @@ const LoginCard = ({ isDeath }: LoginCardProps) => {
       });
 
       console.log('Login successful:', response.data);
-      navigate('/');
+      if (response.data.userId) {
+        localStorage.setItem('userId', response.data.userId);
+        navigate('/');
+      } else {
+        setError('Invalid response from server');
+      }
     } catch (err) {
       const error = err as AxiosError<{error: string}>;
+      console.error('Login error:', error);
       setError(error.response?.data?.error || 'Login failed');
     }
   };

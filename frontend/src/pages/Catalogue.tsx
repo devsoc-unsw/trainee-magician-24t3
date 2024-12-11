@@ -3,6 +3,9 @@ import WelcomeIcon from "../components/WelcomeIcon";
 import logo from "../assets/logo.svg";
 import { useThemeContext } from "../contexts/ThemeContext";
 import { themeConfig } from "../config/theme.config";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
 // Mock data for tips
 const lifeTips = Array(9).fill({
   title: "Drink water everyday",
@@ -18,9 +21,52 @@ const deathTips = Array(9).fill({
   description: "study shows that everyone who drinks water die in the end.",
 });
 
+interface UserData {
+  firstName: string;
+  lastName: string;
+  profileUrl?: string;
+  email: string;
+  favouritePosts: string[];
+}
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
 export const Catalogue = () => {
   const { isDeath, toggleTheme } = useThemeContext();
   const theme = themeConfig[isDeath ? "death" : "life"];
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userId = localStorage.getItem("userId");
+      console.log('Fetching user data with userId:', userId);
+      
+      if (!userId) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        console.log('Making API request to:', `${API_URL}/users/${userId}`);
+        const response = await axios.get(`${API_URL}/users/${userId}`);
+        console.log('User data received:', response.data);
+        setUserData(response.data);
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+        localStorage.removeItem("userId");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  // Show loading state while fetching user data
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className={`min-h-screen ${theme.background}`}>
@@ -64,8 +110,8 @@ export const Catalogue = () => {
         {/* Right section */}
         <div className="flex w-1/4 justify-end">
           <WelcomeIcon
-            firstName="Jane"
-            profilePic="https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg"
+            firstName={userData?.firstName}
+            profilePic={userData?.profileUrl}
           />
         </div>
       </div>
