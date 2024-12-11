@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import TipHeading from "../components/TipHeading";
 import CommunityRating from "../components/CommunityRating";
 import CommentBox from "../components/CommentBox";
@@ -150,6 +151,8 @@ const mockTip: TipProps = {
   },
 };
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
 const TipContent = ({
   tipId,
   currentUser,
@@ -271,8 +274,8 @@ const TipContent = ({
         </a>
 
         <WelcomeIcon
-          firstName="Jane"
-          profilePic="https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg"
+          firstName={currentUser?.firstName}
+          profilePic={currentUser?.profileUrl}
         />
       </div>
       <div id="tip-post-container" className="flex max-w-[70ch] flex-col">
@@ -365,6 +368,63 @@ const TipContent = ({
 };
 
 export const Tip = () => {
-  // Spread the mock data as props
-  return <TipContent {...mockTip} />;
+  const [tipData, setTipData] = useState<TipProps | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Get the logged in user's data if available
+        const userId = localStorage.getItem('userId');
+        let userData = null;
+        
+        if (userId) {
+          const userResponse = await axios.get(`${API_URL}/users/${userId}`);
+          userData = {
+            userId,
+            firstName: userResponse.data.firstName,
+            lastName: userResponse.data.lastName,
+            profileUrl: userResponse.data.profileUrl,
+            favouritePosts: userResponse.data.favouritePosts,
+            email: userResponse.data.email
+          };
+        }
+
+        // TODO: Replace with actual tip fetching once implemented
+        // const tipResponse = await axios.get(`${API_URL}/tips/${tipId}`);
+        // const tipData = tipResponse.data;
+
+        // For now, use mock data but with real user data
+        setTipData({
+          ...mockTip,
+          currentUser: userData || undefined
+        });
+
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError('Failed to load tip data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!tipData) {
+    return <div>No tip data found</div>;
+  }
+
+  return <TipContent {...tipData} />;
 };
