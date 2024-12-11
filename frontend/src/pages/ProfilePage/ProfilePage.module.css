@@ -1,0 +1,93 @@
+/* Personal Info Section */
+.personalInfoContainer {
+    background-color: #63c779;
+    border-bottom: 1px solid #000000;
+}
+
+.profileImage {
+    width: 185px;
+    height: 185px;
+    margin-top: 12px;
+}
+
+.editButtonStyle {
+    background-color: #14161c;
+    border-radius: 10px;
+    border: 1px solid #0a0f0f;
+    width: 170px;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: Futura, sans-serif;
+}
+
+.editIcon {
+    width: 16px;
+    height: 16px;
+}
+
+.button-cancel {
+    background-color: #FFFFFF;
+    color: #0a0F0F;
+}
+
+/* Tips Section */
+.savedContainer {
+    background-color: #FFFFFF;
+}
+
+.tipsCreatedBar {
+    background-color: #d9d9d9;
+    border-radius: 50px;
+    width: 150px;
+    height: 6px;
+}
+
+.tipsSavedBar {
+    background-color: #63c779;
+    border-radius: 50px;
+    width: 150px;
+    height: 6px;
+}
+
+/* GridCards Section */
+.gridContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 300px);
+}
+
+.gridCardWrapper {
+    transform: scale(0.8);
+    transform-origin: center;
+}
+
+
+.savedContainerDeath {
+    background-color: #14161c;
+}
+
+.personalInfoContainerDeath {
+    background-color: #14161c;
+    border-bottom: 1px solid #FFFFFF;
+}
+
+.tipsSavedBarDeath {
+    background-color: #f52a2a;
+    border-radius: 50px;
+    width: 150px;
+    height: 6px;
+}
+
+.editButtonStyleDeath {
+    background-color: #14161c;
+    border-radius: 10px;
+    border: 1px solid #FFFFFF;
+    width: 170px;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: Futura, sans-serif;
+}
+
+.button-saveDeath {
+    background-color: #f52a2a;
+    color: #0a0F0F;
+}

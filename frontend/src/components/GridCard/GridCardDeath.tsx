@@ -22,7 +22,7 @@ const GridCard = ({ title, tags, rating, description }: GridCardProps) => {
 
         <div className={styles.gridCardWrapper}>
             <div
-                className={styles.gridCardContainer}
+                className={styles.gridCardContainerDeath}
                 style={{ "--content-lines": contentLines } as React.CSSProperties}
             >
                 <div className={styles.gridCardTitle}>
@@ -39,7 +39,7 @@ const GridCard = ({ title, tags, rating, description }: GridCardProps) => {
                 </div>
             </div>
 
-            <div className={styles.BackgroundBlock}></div>
+            <div className={styles.BackgroundBlockDeath}></div>
         </div>
 
     );

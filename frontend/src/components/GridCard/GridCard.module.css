@@ -13,6 +13,7 @@
     background-color: white;
     overflow: hidden;
     z-index: 1;
+    --content-lines: 2;
 }
 
 .gridCardContainerDeath {
@@ -48,6 +49,14 @@
     z-index: -1;
 }
 
+.gridCardContainerDeath .gridCardTitle {
+    color: #FFFFFF;
+}
+
+.gridCardContainerDeath .gridCardContent {
+    color: #FFFFFF;
+}
+
 
 .gridCardTitle {
     position: relative;
@@ -73,17 +82,13 @@
 
 
 .gridCardContent {
-    position: absolute;
+    position: relative;
     font-size: 1.2rem;
     color: #555;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
-    bottom: 40px;
-    line-height: 1.2;
+    line-height: 1.4;
+    max-height: calc(1.4em * var(--content-lines, 2));
+    margin-bottom: 8px;
 }
 
 .gridCardRating {
