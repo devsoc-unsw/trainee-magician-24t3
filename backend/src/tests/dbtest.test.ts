@@ -77,6 +77,115 @@ describe("Initial test", () => {
     expect(delRes.data).toStrictEqual({});
   });
 
+  describe("Test tip post functions", () => {
+    let createTipRes: any;
+    let createUserRes: any;
+    beforeAll(async () => {
+      createUserRes = await axios.post(`${SERVER}/users/register`, {
+        email: "myspecialemail@gmail.com",
+        password: "asrotih12b3@!aa",
+        firstName: "Sigma",
+        lastName: "Boy",
+      });
+
+      expect(createUserRes.data).toStrictEqual({
+        userId: expect.any(String),
+      });
+
+      createTipRes = await axios.post(`${SERVER}/tips/`, {
+        title: "example title",
+        type: "LIFE",
+        authorId: createUserRes.data.userId,
+        description: "this is an example description",
+        content: "this is example content",
+      });
+
+      expect(createTipRes.data).toStrictEqual({
+        tipId: expect.any(String),
+      });
+    });
+
+    test("upvote and downvote post", async () => {
+      let res = await axios.put(
+        `${SERVER}/tips/${createUserRes.data.userId}/upvote`,
+        {
+          tipId: createTipRes.data.tipId,
+          turnon: true,
+        }
+      );
+      expect(res.data).toStrictEqual({ upvotes: 1, downvotes: 0 });
+
+      let viewRes = await axios.get(
+        `${SERVER}/tips/${createTipRes.data.tipId}`
+      );
+      expect(viewRes.data.upvotes).toStrictEqual([createUserRes.data.userId]);
+      expect(viewRes.data.downvotes).toStrictEqual([]);
+
+      // test if downvoting also removes upvote
+      res = await axios.put(
+        `${SERVER}/tips/${createUserRes.data.userId}/downvote`,
+        {
+          tipId: createTipRes.data.tipId,
+          turnon: true,
+        }
+      );
+      expect(res.data).toStrictEqual({ upvotes: 0, downvotes: 1 });
+
+      viewRes = await axios.get(`${SERVER}/tips/${createTipRes.data.tipId}`);
+      expect(viewRes.data.upvotes).toStrictEqual([]);
+      expect(viewRes.data.downvotes).toStrictEqual([createUserRes.data.userId]);
+
+      res = await axios.put(
+        `${SERVER}/tips/${createUserRes.data.userId}/downvote`,
+        {
+          tipId: createTipRes.data.tipId,
+          turnon: false,
+        }
+      );
+      expect(res.data).toStrictEqual({ upvotes: 0, downvotes: 0 });
+
+      viewRes = await axios.get(`${SERVER}/tips/${createTipRes.data.tipId}`);
+      expect(viewRes.data.upvotes).toStrictEqual([]);
+      expect(viewRes.data.downvotes).toStrictEqual([]);
+    });
+
+    // need to wait until viewing user route is implemented to test
+    test.todo("favourite post");
+
+    test("comment on post", async () => {
+      const res = await axios.post(
+        `${SERVER}/tips/${createUserRes.data.userId}/comment`,
+        {
+          tipId: createTipRes.data.tipId,
+          content: "hello there this is a comment!",
+        }
+      );
+      expect(res.data).toStrictEqual({});
+      const viewRes = await axios.get(
+        `${SERVER}/tips/${createTipRes.data.tipId}`
+      );
+      expect(viewRes.data.comments).toStrictEqual([
+        {
+          authorId: createUserRes.data.userId,
+          content: "hello there this is a comment!",
+          createdAt: expect.any(Number),
+        },
+      ]);
+    });
+
+    afterAll(async () => {
+      const delTipRes = await axios.delete(
+        `${SERVER}/tips/${createTipRes.data.tipId}`
+      );
+      expect(delTipRes.data).toStrictEqual({});
+
+      const delUserRes = await axios.delete(
+        `${SERVER}/users/${createUserRes.data.userId}`
+      );
+      expect(delUserRes.data).toStrictEqual({});
+    });
+  });
+
   afterAll(async () => {
     const apps = getApps();
     if (apps.length) await Promise.all(apps.map(deleteApp));
