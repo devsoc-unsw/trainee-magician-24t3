@@ -8,19 +8,19 @@ import axios from "axios";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
 
 // Mock data for tips
-const lifeTips = Array(9).fill({
-  title: "Drink water everyday",
-  tags: ["#tags", "#tags", "#tags"],
-  rating: 3,
-  description: "study shows that everyone who drinks water die in the end.",
-});
+// const lifeTips = Array(9).fill({
+//   title: "Drink water everyday",
+//   tags: ["#tags", "#tags", "#tags"],
+//   rating: 3,
+//   description: "study shows that everyone who drinks water die in the end.",
+// });
 
-const deathTips = Array(9).fill({
-  title: "Drink water everyday",
-  tags: ["#tags", "#tags", "#tags"],
-  rating: 3,
-  description: "study shows that everyone who drinks water die in the end.",
-});
+// const deathTips = Array(9).fill({
+//   title: "Drink water everyday",
+//   tags: ["#tags", "#tags", "#tags"],
+//   rating: 3,
+//   description: "study shows that everyone who drinks water die in the end.",
+// });
 
 interface UserData {
   firstName: string;
@@ -30,6 +30,21 @@ interface UserData {
   favouritePosts: string[];
 }
 
+interface TipData {
+  tipId: string;
+  title: string;
+  type: 'LIFE' | 'DEATH';
+  description: string;
+  tags: string[];
+  ratings: Array<{ value: number; raterId: string }>;
+  content: string;
+  authorId: string;
+  createdAt: number;
+  upvotes: string[];
+  downvotes: string[];
+  comments: Array<{ authorId: string; content: string; createdAt: number }>;
+}
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export const Catalogue = () => {
@@ -37,36 +52,47 @@ export const Catalogue = () => {
   const theme = themeConfig[isDeath ? "death" : "life"];
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [tips, setTips] = useState<TipData[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const userId = localStorage.getItem("userId");
-      console.log('Fetching user data with userId:', userId);
-      
-      if (!userId) {
-        setIsLoading(false);
-        return;
-      }
-
+    const fetchData = async () => {
+      setIsLoading(true);
       try {
-        console.log('Making API request to:', `${API_URL}/users/${userId}`);
-        const response = await axios.get(`${API_URL}/users/${userId}`);
-        console.log('User data received:', response.data);
-        setUserData(response.data);
+        // Fetch user data
+        const userId = localStorage.getItem("userId");
+        if (userId) {
+          const userResponse = await axios.get(`${API_URL}/users/${userId}`);
+          setUserData(userResponse.data);
+        }
+
+        // Fetch tips
+        const tipsResponse = await axios.get(`${API_URL}/tips/`);
+        const filteredTips = tipsResponse.data.tips.filter((tip: TipData) => 
+          isDeath ? tip.type === 'DEATH' : tip.type === 'LIFE'
+        );
+        setTips(filteredTips);
       } catch (error) {
-        console.error('Failed to fetch user data:', error);
-        localStorage.removeItem("userId");
+        console.error('Failed to fetch data:', error);
+        setError('Failed to load data');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchUserData();
-  }, []);
+    fetchData();
+  }, [isDeath]); // Re-fetch when isDeath changes
 
-  // Show loading state while fetching user data
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className={`min-h-screen ${theme.background} flex items-center justify-center`}>
+      <div className={theme.text}>Loading...</div>
+    </div>;
+  }
+
+  if (error) {
+    return <div className={`min-h-screen ${theme.background} flex items-center justify-center`}>
+      <div className={`${theme.text} text-red-500`}>{error}</div>
+    </div>;
   }
 
   return (
@@ -114,16 +140,16 @@ export const Catalogue = () => {
       {/* Grid Layout */}
       <div className="mx-auto max-w-7xl px-8">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {(isDeath ? deathTips : lifeTips).map((tip, index) => (
+          {tips.map((tip) => (
             <div
-              key={index}
+              key={tip.tipId}
               className="cursor-pointer transition-transform hover:-translate-y-1"
-              onClick={() => (window.location.href = "/tip")}
+              onClick={() => window.location.href = `/tip/${tip.tipId}`}
             >
               <GridCard
                 title={tip.title}
                 tags={tip.tags}
-                rating={tip.rating}
+                rating={tip.ratings?.reduce((acc, curr) => acc + curr.value, 0) / (tip.ratings?.length || 1) || 0}
                 description={tip.description}
                 isDeath={isDeath}
               />
