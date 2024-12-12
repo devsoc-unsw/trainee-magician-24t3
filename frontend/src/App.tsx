@@ -5,10 +5,31 @@ import { Catalogue } from "./pages/Catalogue";
 import { Tip } from "./pages/Tip";
 import GridCard from './components/GridCard';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <ThemeProvider>
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#333',
+            color: '#fff',
+          },
+          success: {
+            style: {
+              background: '#63C779',
+            },
+          },
+          error: {
+            style: {
+              background: '#F52A2A',
+            },
+          },
+        }}
+      />
       <Routes>
         <Route path="/" element={<Catalogue />} />
         <Route path="/login" element={<Login />} />

@@ -3,6 +3,7 @@ import styles from "./index.module.css";
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
@@ -41,14 +42,18 @@ const LoginCard = () => {
       console.log('Login successful:', response.data);
       if (response.data.userId) {
         localStorage.setItem('userId', response.data.userId);
+        toast.success('Login successful!');
         navigate('/');
       } else {
         setError('Invalid response from server');
+        toast.error('Invalid response from server');
       }
     } catch (err) {
       const error = err as AxiosError<{error: string}>;
       console.error('Login error:', error);
-      setError(error.response?.data?.error || 'Login failed');
+      const errorMessage = error.response?.data?.error || 'Login failed';
+      setError(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
@@ -58,7 +63,9 @@ const LoginCard = () => {
     console.log('Attempting registration with:', formData);
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      const errorMessage = 'Passwords do not match';
+      setError(errorMessage);
+      toast.error(errorMessage);
       return;
     }
 
@@ -71,10 +78,13 @@ const LoginCard = () => {
       });
 
       console.log('Registration successful:', response.data);
+      toast.success('Registration successful! Please sign in.');
       setIsSignUp(false); // Switch to login form
     } catch (err) {
       const error = err as AxiosError<{error: string}>;
-      setError(error.response?.data?.error || 'Registration failed');
+      const errorMessage = error.response?.data?.error || 'Registration failed';
+      setError(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
