@@ -18,4 +18,7 @@ app.get("/", (req, res) => {
   res.send("hello world");
 });
 
-app.listen(process.env.LDPT_PORT);
+const port = process.env.LDPT_PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});

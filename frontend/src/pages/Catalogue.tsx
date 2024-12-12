@@ -3,24 +3,97 @@ import WelcomeIcon from "../components/WelcomeIcon";
 import logo from "../assets/logo.svg";
 import { useThemeContext } from "../contexts/ThemeContext";
 import { themeConfig } from "../config/theme.config";
-// Mock data for tips
-const lifeTips = Array(9).fill({
-  title: "Drink water everyday",
-  tags: ["#tags", "#tags", "#tags"],
-  rating: 3,
-  description: "study shows that everyone who drinks water die in the end.",
-});
+import { useState, useEffect } from "react";
+import axios from "axios";
+import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
 
-const deathTips = Array(9).fill({
-  title: "Drink water everyday",
-  tags: ["#tags", "#tags", "#tags"],
-  rating: 3,
-  description: "study shows that everyone who drinks water die in the end.",
-});
+// Mock data for tips
+// const lifeTips = Array(9).fill({
+//   title: "Drink water everyday",
+//   tags: ["#tags", "#tags", "#tags"],
+//   rating: 3,
+//   description: "study shows that everyone who drinks water die in the end.",
+// });
+
+// const deathTips = Array(9).fill({
+//   title: "Drink water everyday",
+//   tags: ["#tags", "#tags", "#tags"],
+//   rating: 3,
+//   description: "study shows that everyone who drinks water die in the end.",
+// });
+
+interface UserData {
+  firstName: string;
+  lastName: string;
+  profileUrl?: string;
+  email: string;
+  favouritePosts: string[];
+}
+
+interface TipData {
+  tipId: string;
+  title: string;
+  type: 'LIFE' | 'DEATH';
+  description: string;
+  tags: string[];
+  ratings: Array<{ value: number; raterId: string }>;
+  content: string;
+  authorId: string;
+  createdAt: number;
+  upvotes: string[];
+  downvotes: string[];
+  comments: Array<{ authorId: string; content: string; createdAt: number }>;
+}
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export const Catalogue = () => {
-  const { isDeath, toggleTheme } = useThemeContext();
+  const { isDeath } = useThemeContext();
   const theme = themeConfig[isDeath ? "death" : "life"];
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [tips, setTips] = useState<TipData[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        // Fetch user data
+        const userId = localStorage.getItem("userId");
+        if (userId) {
+          const userResponse = await axios.get(`${API_URL}/users/${userId}`);
+          setUserData(userResponse.data);
+        }
+
+        // Fetch tips
+        const tipsResponse = await axios.get(`${API_URL}/tips/`);
+        const filteredTips = tipsResponse.data.tips.filter((tip: TipData) => 
+          isDeath ? tip.type === 'DEATH' : tip.type === 'LIFE'
+        );
+        setTips(filteredTips);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        setError('Failed to load data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [isDeath]); // Re-fetch when isDeath changes
+
+  if (isLoading) {
+    return <div className={`min-h-screen ${theme.background} flex items-center justify-center`}>
+      <div className={theme.text}>Loading...</div>
+    </div>;
+  }
+
+  if (error) {
+    return <div className={`min-h-screen ${theme.background} flex items-center justify-center`}>
+      <div className={`${theme.text} text-red-500`}>{error}</div>
+    </div>;
+  }
 
   return (
     <div className={`min-h-screen ${theme.background}`}>
@@ -33,39 +106,14 @@ export const Catalogue = () => {
 
         {/* Center section */}
         <div className="flex w-1/2 justify-center">
-          {/* Theme Toggle */}
-          <div
-            className={`relative h-10 w-32 cursor-pointer overflow-hidden rounded-lg border border-black p-1 shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] ${
-              !isDeath ? "bg-[#63C779]" : "bg-[#F52A2A]"
-            }`}
-            onClick={toggleTheme}
-          >
-            {/* Overlay */}
-            <div
-              className={`absolute left-0 top-0 z-10 h-full w-1/2 transform rounded-[6px] border border-black bg-white transition-transform duration-300 ease-in-out ${
-                isDeath ? "translate-x-full" : "translate-x-0"
-              }`}
-            />
-
-            {/* Text Container */}
-            <div className="relative flex h-full">
-              {/* DEATH Text */}
-              <div className="flex w-1/2 items-center justify-center text-sm font-bold">
-                DEATH
-              </div>
-              {/* LIFE Text */}
-              <div className="flex w-1/2 items-center justify-center text-sm font-bold">
-                LIFE
-              </div>
-            </div>
-          </div>
+          <ThemeToggle />
         </div>
 
         {/* Right section */}
         <div className="flex w-1/4 justify-end">
           <WelcomeIcon
-            firstName="Jane"
-            profilePic="https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg"
+            firstName={userData?.firstName}
+            profilePic={userData?.profileUrl}
           />
         </div>
       </div>
@@ -92,16 +140,16 @@ export const Catalogue = () => {
       {/* Grid Layout */}
       <div className="mx-auto max-w-7xl px-8">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {(isDeath ? deathTips : lifeTips).map((tip, index) => (
+          {tips.map((tip) => (
             <div
-              key={index}
+              key={tip.tipId}
               className="cursor-pointer transition-transform hover:-translate-y-1"
-              onClick={() => (window.location.href = "/tip")}
+              onClick={() => window.location.href = `/tip/${tip.tipId}`}
             >
               <GridCard
                 title={tip.title}
                 tags={tip.tags}
-                rating={tip.rating}
+                rating={tip.ratings?.reduce((acc, curr) => acc + curr.value, 0) / (tip.ratings?.length || 1) || 0}
                 description={tip.description}
                 isDeath={isDeath}
               />
