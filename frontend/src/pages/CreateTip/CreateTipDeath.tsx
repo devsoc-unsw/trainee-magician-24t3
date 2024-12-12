@@ -66,7 +66,7 @@ export function CreateTipDeath() {
                         className="absolute top-1 left-1 bg-black rounded-lg"
                         style={{ width: "105px", height: "48px" }}
                     ></div>
-                    <button className="relative px-6 py-3 bg-red-600 text-black font-bold rounded-lg hover:bg-green-600">
+                    <button className="relative px-6 py-3 bg-red-600 text-black font-bold rounded-lg hover:bg-red-700">
                         Publish
                     </button>
                 </div>
