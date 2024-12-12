@@ -1,21 +1,16 @@
 import { useState } from "react";
 import styles from "./index.module.css";
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
-import { themeConfig } from "../../config/theme.config";
 import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-interface LoginCardProps {
-  isDeath?: boolean;
-}
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 console.log('API URL:', API_URL);
 
-const LoginCard = ({ isDeath }: LoginCardProps) => {
+const LoginCard = () => {
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
-  const theme = themeConfig[isDeath ? "death" : "life"];
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -84,10 +79,10 @@ const LoginCard = ({ isDeath }: LoginCardProps) => {
   };
 
   return (
-    <div className={`relative flex h-[425px] w-[700px] overflow-hidden rounded-3xl ${theme.background} shadow-xl`}>
+    <div className="relative flex h-[425px] w-[700px] overflow-hidden rounded-3xl bg-white shadow-xl">
       {/* Sign In Form */}
       <div className="h-full w-6/12 p-12">
-        <h1 className={`mb-8 text-3xl font-light ${theme.text}`}>Sign In</h1>
+        <h1 className="mb-8 text-3xl font-light text-gray-800">Sign In</h1>
         <form className="flex flex-col gap-14" onSubmit={handleLogin}>
           <input 
             className={styles.input} 
@@ -112,9 +107,9 @@ const LoginCard = ({ isDeath }: LoginCardProps) => {
       </div>
 
       {/* Sign Up Form */}
-      <div className="h-full w-6/12 p-12">
-        <h1 className={`mb-8 text-3xl font-light ${theme.text}`}>Sign Up</h1>
-        <form className="flex flex-col gap-6" onSubmit={handleSignUp}>
+      <div className="h-full w-6/12 p-12 overflow-auto">
+        <h1 className="mb-8 text-3xl font-light text-gray-800">Sign Up</h1>
+        <form className="flex flex-col gap-4" onSubmit={handleSignUp}>
           {error && <div className="text-red-500 text-sm">{error}</div>}
           <input
             className={styles.input}
@@ -184,7 +179,7 @@ const LoginCard = ({ isDeath }: LoginCardProps) => {
           boxShadow: "-5px 0 15px rgba(0, 0, 0, 0.1)",
         }}
         transition={{ type: "spring", duration: 0.7, bounce: 0 }}
-        className={`absolute top-0 h-full w-6/12 ${isDeath ? "bg-[#F52A2A]" : "bg-[#63C779]"} px-4 py-12 text-white`}
+        className="absolute top-0 h-full w-6/12 bg-gray-900 px-4 py-12 text-white"
       >
         <MotionConfig transition={{ duration: 0.6 }}>
           <AnimatePresence mode="popLayout">
