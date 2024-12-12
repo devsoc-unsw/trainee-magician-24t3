@@ -16,74 +16,114 @@ import { commentPost } from "../tips/commentPost";
 const tipsRouter = Router();
 
 tipsRouter.get("/", async (req, res) => {
-  const tips = (await getDocs(collection(DB, "tips"))).docs.map((d) =>
-    d.data()
-  );
-  res.send({
-    tips,
-  });
+  try {
+    const tips = (await getDocs(collection(DB, "tips"))).docs.map((d) =>
+      d.data()
+    );
+    res.send({
+      tips,
+    });
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
+  }
 });
 
 tipsRouter.post("/", async (req, res) => {
-  const ret = await createTip(
-    req.body.title,
-    req.body.type,
-    req.body.authorId,
-    req.body.description,
-    req.body.content
-  );
+  try {
+    const ret = await createTip(
+      req.body.title,
+      req.body.type,
+      req.body.authorId,
+      req.body.description,
+      req.body.content
+    );
 
-  res.send(ret);
+    res.send(ret);
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
+  }
 });
 
 tipsRouter.get("/:id", async (req, res) => {
-  const docRef = doc(DB, "tips", req.params.id);
-  const docSnapshot = await getDoc(docRef);
-  const ret = docSnapshot.data();
+  try {
+    const docRef = doc(DB, "tips", req.params.id);
+    const docSnapshot = await getDoc(docRef);
+    if (!docSnapshot.exists()) {
+      throw new Error("Tip does not exist");
+    }
+    const ret = docSnapshot.data();
 
-  res.send(ret);
+    res.send(ret);
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
+  }
 });
 
 tipsRouter.delete("/:id", async (req, res) => {
-  const docRef = doc(DB, "tips", req.params.id);
-  const ret = await deleteDoc(docRef);
-  res.send({});
+  try {
+    const docRef = doc(DB, "tips", req.params.id);
+    const ret = await deleteDoc(docRef);
+
+    res.send({});
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
+  }
 });
 
 tipsRouter.put("/:userid/upvote", async (req, res) => {
-  const ret = await upvotePost(
-    req.params.userid,
-    req.body.tipId,
-    req.body.turnon
-  );
-  res.send(ret);
+  try {
+    const ret = await upvotePost(
+      req.params.userid,
+      req.body.tipId,
+      req.body.turnon
+    );
+  
+    res.send(ret);
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
+  }
 });
 
 tipsRouter.put("/:userid/downvote", async (req, res) => {
-  const ret = await downvotePost(
-    req.params.userid,
-    req.body.tipId,
-    req.body.turnon
-  );
-  res.send(ret);
+  try {
+    const ret = await downvotePost(
+      req.params.userid,
+      req.body.tipId,
+      req.body.turnon
+    );
+  
+    res.send(ret);
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
+  }
 });
 
 tipsRouter.put("/:userid/favourite", async (req, res) => {
-  const ret = await favouritePost(
-    req.params.userid,
-    req.body.tipId,
-    req.body.turnon
-  );
-  res.send(ret);
+  try {
+    const ret = await favouritePost(
+      req.params.userid,
+      req.body.tipId,
+      req.body.turnon
+    );
+  
+    res.send(ret);
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
+  }
 });
 
 tipsRouter.post("/:userid/comment", async (req, res) => {
-  const ret = await commentPost(
-    req.params.userid,
-    req.body.tipId,
-    req.body.content
-  );
-  res.send(ret);
+  try {
+    const ret = await commentPost(
+      req.params.userid,
+      req.body.tipId,
+      req.body.content
+    );
+    
+    res.send(ret);
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
+  }
 });
 
 export default tipsRouter;

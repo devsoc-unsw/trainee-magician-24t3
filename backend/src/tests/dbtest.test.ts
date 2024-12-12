@@ -149,8 +149,64 @@ describe("Initial test", () => {
       expect(viewRes.data.downvotes).toStrictEqual([]);
     });
 
-    // need to wait until viewing user route is implemented to test
+    test("upvote and downvote returns errors", async () => {
+      try {
+        await axios.put(
+          `${SERVER}/tips/${createUserRes.data.userId}/upvote`,
+          {
+            tipId: 'thereisnowaythistipidexists',
+            turnon: true,
+          }
+        );
+      } catch (e: any) {
+        expect(e.response.status).toStrictEqual(400);
+        expect(e.response.data).toStrictEqual({ error: expect.any(String) });
+      }
+
+      try {
+        await axios.put(
+          `${SERVER}/tips/thereisnowaythisuseridexists/downvote`,
+          {
+            tipId: createTipRes.data.tipId,
+            turnon: false,
+          }
+        );
+      } catch (e: any) {
+        expect(e.response.status).toStrictEqual(400);
+        expect(e.response.data).toStrictEqual({ error: expect.any(String) });
+      }
+    });
+
+    // TODO: need to wait until viewing user route is implemented to test
     test.todo("favourite post");
+
+    test("favourite returns errors", async () => {
+      try {
+        await axios.put(
+          `${SERVER}/tips/${createUserRes.data.userId}/favourite`,
+          {
+            tipId: 'thereisnowaythistipidexists',
+            turnon: true,
+          }
+        );
+      }  catch (e: any) {
+        expect(e.response.status).toStrictEqual(400);
+        expect(e.response.data).toStrictEqual({ error: expect.any(String) });
+      }
+
+      try {
+        await axios.put(
+          `${SERVER}/tips/thereisnowaythisuseridexists/favourite`,
+          {
+            tipId: createTipRes.data.tipId,
+            turnon: true,
+          }
+        );
+      } catch (e: any) {
+        expect(e.response.status).toStrictEqual(400);
+        expect(e.response.data).toStrictEqual({ error: expect.any(String) });
+      }
+    });
 
     test("comment on post", async () => {
       const res = await axios.post(
@@ -171,6 +227,21 @@ describe("Initial test", () => {
           createdAt: expect.any(Number),
         },
       ]);
+    });
+
+    test("comment returns errors", async () => {
+      try {
+        await axios.post(
+          `${SERVER}/tips/${createUserRes.data.userId}/comment`,
+          {
+            tipId: 'thereisnowaythistipexists',
+            content: "hello there this is a comment!",
+          }
+        );
+      } catch (e: any) {
+        expect(e.response.status).toStrictEqual(400);
+        expect(e.response.data).toStrictEqual({ error: expect.any(String) });
+      }
     });
 
     afterAll(async () => {

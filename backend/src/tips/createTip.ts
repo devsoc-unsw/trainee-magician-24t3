@@ -12,6 +12,10 @@ export async function createTip(
   description: string,
   content: string
 ): Promise<CreateTipReturn> {
+  if (title === '' || type === '' || authorId == '' || content == '') {
+    throw new Error('Cannot have empty fields');
+  }
+
   const ret = await addDoc(collection(DB, "tips"), {
     title: title,
     type: type,
