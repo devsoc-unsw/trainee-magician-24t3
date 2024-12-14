@@ -52,3 +52,5 @@ export const themeConfig: Record<
     },
   },
 };
+
+export type ThemeConfig = typeof themeConfig;

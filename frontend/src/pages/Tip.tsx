@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import TipHeading from "../components/TipHeading";
 import CommunityRating from "../components/CommunityRating";
 import CommentBox from "../components/CommentBox";
@@ -10,57 +12,12 @@ import TipTags from "../components/TipTags";
 import FavouriteButton from "../components/FavouriteButton";
 import { useThemeContext } from "../contexts/ThemeContext";
 import { themeConfig } from "../config/theme.config";
-import { useParams } from "react-router-dom";
-
-interface Rating {
-  value: 1 | 2 | 3 | 4 | 5;
-  raterId: string;
-}
-
-interface Comment {
-  authorId: string;
-  content: string;
-  createdAt: string;
-  // Additional frontend-only properties after fetching
-  author?: {
-    name: string;
-    profilePic?: string;
-  };
-}
-
-interface TipProps {
-  tipId: string;
-  title: string;
-  type: "DEATH OR LIFE"; // Can be expanded to include other types if needed
-  authorId: string;
-  tags: string[];
-  ratings: Rating[];
-  description: string;
-  upvotes: string[]; // Array of userIds
-  downvotes: string[]; // Array of userIds
-  createdAt: string;
-  content: string;
-  comments: Comment[];
-  // Additional frontend-only properties after fetching
-  author?: {
-    name: string;
-    profilePic: string;
-  };
-  currentUser?: {
-    userId: string;
-    firstName: string;
-    lastName: string;
-    profileUrl: string;
-    favouritePosts: string[] ;
-    email: string;
-  };
-}
-
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-hot-toast";
-import { Rating, Comment, TipData as TipProps } from "../types/tip";
+import { TipData, Rating, Comment } from "../types/tip";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+// Use TipData type from types file
+type TipProps = TipData;
 
 const TipContent = ({
   tipId,
