@@ -12,64 +12,7 @@ import { useThemeContext } from "../contexts/ThemeContext";
 import { themeConfig } from "../config/theme.config";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
-
-interface Rating {
-  value: 1 | 2 | 3 | 4 | 5;
-  raterId: string;
-}
-
-interface Comment {
-  authorId: string;
-  content: string;
-  createdAt: string;
-  author: {
-    name: string;
-    profilePic?: string;
-    firstName: string;
-    lastName: string;
-  };
-}
-
-interface NewComment {
-  authorId: string;
-  content: string;
-  createdAt: string;
-  author: {
-    name: string;
-    profilePic?: string;
-    firstName: string;
-    lastName: string;
-  };
-}
-
-interface TipProps {
-  tipId: string;
-  title: string;
-  type: "DEATH OR LIFE";
-  authorId: string;
-  tags: string[];
-  ratings: Rating[];
-  description: string;
-  upvotes: string[];
-  downvotes: string[];
-  createdAt: string;
-  content: string;
-  comments: Comment[];
-  author: {
-    name: string;
-    profilePic?: string;
-    firstName: string;
-    lastName: string;
-  };
-  currentUser?: {
-    userId: string;
-    firstName: string;
-    lastName: string;
-    profileUrl: string;
-    favouritePosts: string[];
-    email: string;
-  };
-}
+import { Rating, Comment, TipData as TipProps } from "../types/tip";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -173,7 +116,7 @@ const TipContent = ({
       });
 
       // Create new comment object for local state with full author info
-      const newComment: NewComment = {
+      const newComment: Comment = {
         authorId: userId,
         content: newCommentText.trim(),
         createdAt: new Date().toISOString(),
