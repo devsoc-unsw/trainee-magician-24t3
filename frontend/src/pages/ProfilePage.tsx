@@ -52,7 +52,6 @@ export const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [userInfo, setUserInfo] = useState<UserData | null>(null);
-  const [favList, setFavList] = useState<string[]>([]);
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const [isEditing, setIsEditing] = useState(false);
   const [editInfo, setEditInfo] = useState({ ...userInfo });
@@ -71,12 +70,13 @@ export const ProfilePage = () => {
           profileUrl: userResponse?.data?.profileUrl,
           email: userResponse?.data?.email,
         });
-        setEditInfo({ ...userInfo });
-        // Set favorite list
+        setEditInfo({
+          userName: userResponse?.data?.firstName,
+          fullName: `${userResponse?.data?.firstName} ${userResponse?.data?.lastName}`,
+          profileUrl: userResponse?.data?.profileUrl,
+          email: userResponse?.data?.email,
+        });
         const favList = userResponse?.data?.favouritePosts || [];
-        setFavList(favList);
-  
-        // Fetch favorite tips
         if (favList.length > 0) {
           const fetchedTips = await Promise.all(
             favList.map(async (tipId) => {
@@ -118,6 +118,19 @@ export const ProfilePage = () => {
   const handleEdit = () => setIsEditing(true);
   const handleSave = () => {
     setUserInfo({ ...editInfo });
+    const userId = localStorage.getItem("userId");
+    const fullNameParts = editInfo?.fullName?.split(' ') || [];
+    const firstName = editInfo?.userName || fullNameParts[0];
+    const lastName = fullNameParts.slice(1).join(' ') || ""; // Handles multi-part names
+    const updatedUser = async() => {
+      const response = await axios.put(`${API_URL}/users/${userId}`,{
+        firstName:firstName,
+        lastName:lastName,
+        email: editInfo?.email,
+      });
+      console.log("Updated user:", response.data);
+    }
+    updatedUser(); 
     setIsEditing(false);
   };
   const handleCancel = () => {
