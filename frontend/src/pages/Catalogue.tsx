@@ -8,29 +8,6 @@ import axios from "axios";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
 import { useNavigate } from "react-router-dom";
 
-// Mock data for tips
-// const lifeTips = Array(9).fill({
-//   title: "Drink water everyday",
-//   tags: ["#tags", "#tags", "#tags"],
-//   rating: 3,
-//   description: "study shows that everyone who drinks water die in the end.",
-// });
-
-// const deathTips = Array(9).fill({
-//   title: "Drink water everyday",
-//   tags: ["#tags", "#tags", "#tags"],
-//   rating: 3,
-//   description: "study shows that everyone who drinks water die in the end.",
-// });
-
-interface UserData {
-  firstName: string;
-  lastName: string;
-  profileUrl?: string;
-  email: string;
-  favouritePosts: string[];
-}
-
 interface TipData {
   tipId: string;
   title: string;
@@ -51,40 +28,30 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 export const Catalogue = () => {
   const { isDeath } = useThemeContext();
   const theme = themeConfig[isDeath ? "death" : "life"];
-  const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [tips, setTips] = useState<TipData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchTips = async () => {
       setIsLoading(true);
       try {
-        // Fetch user data
-        const userId = localStorage.getItem("userId");
-        if (userId) {
-          const userResponse = await axios.get(`${API_URL}/users/${userId}`);
-          setUserData(userResponse.data);
-        }
-
-        // Fetch tips
         const tipsResponse = await axios.get(`${API_URL}/tips/`);
-        console.log(tipsResponse);
         const filteredTips = tipsResponse.data.tips.filter((tip: TipData) =>
-          isDeath ? tip.type === "DEATH" : tip.type === "LIFE",
+          isDeath ? tip.type === "DEATH" : tip.type === "LIFE"
         );
         setTips(filteredTips);
       } catch (error) {
-        console.error("Failed to fetch data:", error);
-        setError("Failed to load data");
+        console.error("Failed to fetch tips:", error);
+        setError("Failed to load tips");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchData();
-  }, [isDeath]); // Re-fetch when isDeath changes
+    fetchTips();
+  }, [isDeath]);
 
   if (isLoading) {
     return (
@@ -122,10 +89,7 @@ export const Catalogue = () => {
 
         {/* Right section */}
         <div className="flex w-1/4 items-center justify-end gap-4">
-          <WelcomeIcon
-            firstName={userData?.firstName}
-            profilePic={userData?.profileUrl}
-          />
+          <WelcomeIcon />
         </div>
       </div>
 
