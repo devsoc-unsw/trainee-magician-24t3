@@ -163,7 +163,7 @@ const TipContent = ({
 
   return (
     <div
-      className={`flex flex-col items-center ${theme.background} ${theme.text}`}
+      className={`flex flex-col items-center ${theme.background} ${theme.text} h-full`}
     >
       <div
         id="tip-header-container"
