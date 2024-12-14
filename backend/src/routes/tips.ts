@@ -77,10 +77,28 @@ tipsRouter.get("/:id", async (req, res) => {
     }
     const tipData = docSnapshot.data();
 
-    res.send({
-      tipId: docSnapshot.id,
+    // Get the tip author's information
+    const tipAuthorRef = doc(DB, "users", tipData.authorId);
+    const tipAuthorSnapshot = await getDoc(tipAuthorRef);
+    const tipAuthorData = tipAuthorSnapshot.exists() ? tipAuthorSnapshot.data() : null;
+
+    const responseData = {
       ...tipData,
-    });
+      tipId: docSnapshot.id,
+      author: tipAuthorData ? {
+        name: `${tipAuthorData.firstName} ${tipAuthorData.lastName}`,
+        profilePic: tipAuthorData.profileUrl,
+        firstName: tipAuthorData.firstName,
+        lastName: tipAuthorData.lastName
+      } : {
+        name: "Unknown User",
+        profilePic: undefined,
+        firstName: "Unknown",
+        lastName: "User"
+      }
+    };
+
+    res.send(responseData);
   } catch (e: any) {
     res.status(400).json({ error: e.message });
   }
