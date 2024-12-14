@@ -2,7 +2,7 @@ import WelcomeIcon from "../components/WelcomeIcon";
 import logo from "../assets/logo.svg";
 import { useThemeContext } from "../contexts/ThemeContext";
 import { themeConfig } from "../config/theme.config";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import axios from "axios";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
 import { useNavigate } from "react-router-dom";
@@ -42,22 +42,31 @@ export const Catalogue = () => {
     fetchTips();
   }, [isDeath]);
 
-  const debouncedFilter = useCallback((term: string) => {
-    debounce((searchTerm: string) => {
-      const filtered = allTips.filter(tip => 
-        tip.title.toLowerCase().includes(searchTerm) ||
-        tip.description.toLowerCase().includes(searchTerm) ||
-        tip.tags?.some(tag => tag.toLowerCase().includes(searchTerm)) ||
-        tip.author?.name?.toLowerCase().includes(searchTerm)
-      );
-      setFilteredTips(filtered);
-    }, 500)(term);
+  const filterTips = useCallback((searchTerm: string) => {
+    const filtered = allTips.filter(tip => 
+      tip.title.toLowerCase().includes(searchTerm) ||
+      tip.description.toLowerCase().includes(searchTerm) ||
+      tip.tags?.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+      tip.author?.name?.toLowerCase().includes(searchTerm)
+    );
+    setFilteredTips(filtered);
   }, [allTips]);
+
+  const debouncedFilterTips = useMemo(
+    () => debounce(filterTips, 500),
+    [filterTips]
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedFilterTips.cancel();
+    };
+  }, [debouncedFilterTips]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
-    debouncedFilter(term);
+    debouncedFilterTips(term);
   };
 
   if (error) {
