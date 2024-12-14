@@ -33,17 +33,37 @@ tipsRouter.get("/", async (req, res) => {
 });
 
 tipsRouter.post("/", async (req, res) => {
+  console.log(`[${new Date().toISOString()}] Attempting to create new tip:`, {
+    title: req.body.title,
+    type: req.body.type,
+    authorId: req.body.authorId,
+    tagsCount: req.body.tags?.length || 0
+  });
+
   try {
     const ret = await createTip(
       req.body.title,
       req.body.type,
       req.body.authorId,
       req.body.description,
-      req.body.content
+      req.body.content,
+      req.body.tags || []
     );
+
+    console.log(`[${new Date().toISOString()}] Successfully created tip:`, {
+      tipId: ret.tipId,
+      authorId: req.body.authorId,
+      type: req.body.type
+    });
 
     res.send(ret);
   } catch (e: any) {
+    console.error(`[${new Date().toISOString()}] Failed to create tip:`, {
+      error: e.message,
+      authorId: req.body.authorId,
+      type: req.body.type
+    });
+
     res.status(400).json({ error: e.message });
   }
 });

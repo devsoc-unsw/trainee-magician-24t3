@@ -6,6 +6,7 @@ import { themeConfig } from "../config/theme.config";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
+import { useNavigate } from 'react-router-dom';
 
 // Mock data for tips
 // const lifeTips = Array(9).fill({
@@ -54,6 +55,7 @@ export const Catalogue = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [tips, setTips] = useState<TipData[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -111,7 +113,13 @@ export const Catalogue = () => {
         </div>
 
         {/* Right section */}
-        <div className="flex w-1/4 justify-end">
+        <div className="flex w-1/4 justify-end items-center gap-4">
+          <button 
+            onClick={() => navigate('/create-tip')}
+            className={`px-4 py-2 rounded-lg ${theme.text} border ${theme.borderColor} hover:opacity-80`}
+          >
+            Create Post
+          </button>
           <WelcomeIcon
             firstName={userData?.firstName}
             profilePic={userData?.profileUrl}
