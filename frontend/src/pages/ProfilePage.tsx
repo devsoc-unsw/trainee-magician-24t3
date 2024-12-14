@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { useThemeContext } from "../contexts/ThemeContext";
 import { themeConfig } from "../config/theme.config";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const lifeTips = Array(9).fill({
   title: "Drink Water Everyday",
@@ -61,6 +63,14 @@ export const ProfilePage = () => {
     setShowingDeathTips(newIsDeath);
   };
 
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('userId');
+    navigate('/');
+    toast.success('Logout successful!');
+  };
+
   const InfoRow = ({
     label,
     value,
@@ -110,7 +120,16 @@ export const ProfilePage = () => {
 
         {/* Profile Information */}
         <div className="ml-12 w-2/3">
+        <div className="flex justify-between">
           <h2 className={`mb-6 text-2xl font-bold ${theme.text}`}>Profile</h2>
+          <button 
+            className="w-24 h-10 rounded-lg bg-blue-500 text-white hover:bg-blue-600 mr-20"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
+        
 
           <div className="space-y-4">
             <InfoRow
