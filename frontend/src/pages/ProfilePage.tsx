@@ -71,7 +71,7 @@ export const ProfilePage = () => {
           profileUrl: userResponse?.data?.profileUrl,
           email: userResponse?.data?.email,
         });
-  
+        setEditInfo({ ...userInfo });
         // Set favorite list
         const favList = userResponse?.data?.favouritePosts || [];
         setFavList(favList);
