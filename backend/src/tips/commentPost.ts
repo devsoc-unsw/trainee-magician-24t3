@@ -7,27 +7,56 @@ export async function commentPost(
   tipId: string,
   content: string
 ): Promise<{}> {
-  if (userId === '' || tipId === '' || content == '') {
+  // Input validation
+  if (!userId || !tipId || !content) {
     throw new Error('Cannot have empty fields');
-  } else if (!doesUserExist(userId)) {
-    throw new Error('User does not exist');
   }
 
-  const docRef = doc(DB, "tips", tipId);
-  let docSnapshot = await getDoc(docRef);
-  if (!docSnapshot.exists()) {
-    throw new Error("Tip does not exist");
+  try {
+    // Check if user exists and get their data
+    const userRef = doc(DB, "users", userId);
+    const userSnapshot = await getDoc(userRef);
+    
+    if (!userSnapshot.exists()) {
+      throw new Error('User does not exist');
+    }
+    
+    const userData = userSnapshot.data();
+
+    // Get tip document
+    const docRef = doc(DB, "tips", tipId);
+    const docSnapshot = await getDoc(docRef);
+    
+    if (!docSnapshot.exists()) {
+      throw new Error("Tip does not exist");
+    }
+    
+    const docData = docSnapshot.data() as DocumentData;
+    
+    // Initialize comments array if it doesn't exist
+    const comments = docData.comments || [];
+    
+    // Add new comment with author information
+    const newComment = {
+      authorId: userId,
+      content: content,
+      createdAt: new Date().toISOString(),
+      author: {
+        name: `${userData.firstName} ${userData.lastName}`,
+        profilePic: userData.profileUrl,
+        firstName: userData.firstName,
+        lastName: userData.lastName
+      }
+    };
+    
+    comments.push(newComment);
+
+    // Update document with new comments array
+    await updateDoc(docRef, { comments: comments });
+
+    return {};
+  } catch (error) {
+    console.error("Error in commentPost:", error);
+    throw error;
   }
-  let docData = docSnapshot.data() as DocumentData;
-
-  const updatedArray = docData.comments;
-  updatedArray.push({
-    authorId: userId,
-    content: content,
-    createdAt: Math.floor(Date.now() / 1000),
-  });
-
-  await updateDoc(docRef, { comments: updatedArray });
-
-  return {};
 }
