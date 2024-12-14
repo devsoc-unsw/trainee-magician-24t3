@@ -4,12 +4,14 @@ import {
   deleteDoc,
   doc,
   DocumentReference,
+  updateDoc,
   getDoc,
 } from "@firebase/firestore";
 import { Router, Request, Response, RequestHandler } from "express";
 import DB from "../db/db";
 import { register } from "../user/register";
 import { login } from "../user/login";
+import { updateUserInfo } from "../user/update";
 
 const userRouter = Router();
 
@@ -79,6 +81,45 @@ userRouter.post("/login", (async (req: Request, res: Response) => {
 userRouter.delete("/:id", (async (req: Request, res: Response) => {
   const ret = await deleteDoc(doc(DB, "users", req.params.id));
   res.send({});
+}) as RequestHandler);
+
+userRouter.put("/:id", (async (req: Request, res: Response) => {
+  try {
+    const { firstName, lastName, email } = req.body;
+    const userId = req.params.id;
+
+    // Input validation
+    if (!firstName || !lastName || !email) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    // Update user info
+    const result = await updateUserInfo(userId, email, firstName, lastName);
+    if (!result) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Fetch updated user data
+    const userDoc = await getDoc(doc(DB, "users", userId));
+    if (!userDoc.exists()) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const userData = userDoc.data();
+    // Return the complete updated user data
+    res.json({
+      id: userDoc.id,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      profileUrl: userData.profileUrl,
+      favouritePosts: userData.favouritePosts
+    });
+
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(400).json({ error: 'Failed to update user info' });
+  }
 }) as RequestHandler);
 
 export default userRouter;

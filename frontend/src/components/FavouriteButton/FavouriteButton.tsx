@@ -4,6 +4,7 @@ import styles from "./index.module.css";
 interface FavouriteButtonProps {
   hasFavourited: boolean;
   onFavourite: (isFavouriting: boolean) => void;
+  
 }
 
 const FavouriteButton = ({

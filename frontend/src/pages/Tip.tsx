@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import TipHeading from "../components/TipHeading";
 import CommunityRating from "../components/CommunityRating";
 import CommentBox from "../components/CommentBox";
@@ -10,11 +12,12 @@ import TipTags from "../components/TipTags";
 import FavouriteButton from "../components/FavouriteButton";
 import { useThemeContext } from "../contexts/ThemeContext";
 import { themeConfig } from "../config/theme.config";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-hot-toast";
-import { Rating, Comment, TipData as TipProps } from "../types/tip";
+import { TipData, Rating, Comment } from "../types/tip";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+// Use TipData type from types file
+type TipProps = TipData;
 
 const TipContent = ({
   tipId,
@@ -36,8 +39,9 @@ const TipContent = ({
   const [localDownvotes, setLocalDownvotes] = useState(downvotes);
   const [localRatings, setLocalRatings] = useState<Rating[]>(ratings);
   const [isFavourited, setIsFavourited] = useState(
-    currentUser?.favouritePosts?.includes(tipId) ?? false,
+    currentUser?.favouritePosts.includes(tipId) ? true: false
   );
+
   const [localComments, setLocalComments] = useState<Comment[]>(comments);
   const [newCommentText, setNewCommentText] = useState("");
 
@@ -86,7 +90,33 @@ const TipContent = ({
 
   const handleFavourite = (isFavouriting: boolean) => {
     setIsFavourited(isFavouriting);
-    // Here you would make an API call to update the user's favouritePosts array
+    const userId = currentUser?.userId;
+    const updateFav = async()=>{
+      const favourites = {...(currentUser?.favouritePosts)};
+      console.log("Favourites before update: ", favourites);
+      if (isFavouriting){
+        try {
+          const updatedFavourites = await axios.put(`${API_URL}/tips/${userId}/favourite`, {
+            tipId: tipId,
+            turnon: true,
+          });
+          console.log("Favourites updated: ", updatedFavourites);
+        }catch (error) {
+          console.log("Error fetching favourite list: ", error);
+        }
+      }else{
+        try{
+          const updatedFavourites = await axios.put(`${API_URL}/tips/${userId}/favourite`, {
+            tipId: tipId,
+            turnon: false,
+          });
+          console.log("Favourites updated: ", updatedFavourites);
+        }catch (error) {
+          console.log("Error fetching favorite list unfavorited: ", error);
+        }
+      }
+    }
+    updateFav();
   };
 
   const handleRatingSubmit = async (newRating: number) => {

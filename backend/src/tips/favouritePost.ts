@@ -19,7 +19,6 @@ export async function favouritePost(
     throw new Error("Tip does not exist");
   }
   let docData = docSnapshot.data() as DocumentData;
-
   const updatedArray = docData.favouritePosts.filter(
     (id: string) => id !== tipId
   );
