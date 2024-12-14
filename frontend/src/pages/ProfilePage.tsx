@@ -57,9 +57,9 @@ export const ProfilePage = () => {
   const [userInfo, setUserInfo] = useState<UserData | null>(null);
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const [isEditing, setIsEditing] = useState(false);
-  const [editFirstName, setEditFirstName] = useState('');
-  const [editLastName, setEditLastName] = useState('');
-  const [editEmail, setEditEmail] = useState('');
+  const [editFirstName, setEditFirstName] = useState("");
+  const [editLastName, setEditLastName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
   const [tipData, setTipData] = useState<TipData[]>([]);
 
   useEffect(() => {
@@ -122,7 +122,7 @@ export const ProfilePage = () => {
       toast.error("All fields are required");
       return;
     }
-    
+
     const userId = localStorage.getItem("userId");
     if (!userId) {
       toast.error("Please login first");
@@ -142,7 +142,7 @@ export const ProfilePage = () => {
       setUserInfo({
         firstName: editFirstName,
         lastName: editLastName,
-        profileUrl: userInfo?.profileUrl || '',
+        profileUrl: userInfo?.profileUrl || "",
         email: editEmail,
         favouritePosts: userInfo?.favouritePosts || [],
       });
@@ -200,11 +200,21 @@ export const ProfilePage = () => {
 
           {/* Profile Information */}
           <div className="ml-12 w-2/3">
-            <h2 className={`mb-6 text-2xl font-bold ${theme.text}`}>Profile</h2>
+            <div className="flex justify-between">
+              <h2 className={`mb-6 text-2xl font-bold ${theme.text}`}>
+                Profile
+              </h2>
+              <button
+                className="mr-20 h-10 w-24 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
             <div className="space-y-4">
               <InfoRow
                 label="First Name"
-                value={isEditing ? editFirstName : (userInfo?.firstName ?? '')}
+                value={isEditing ? editFirstName : (userInfo?.firstName ?? "")}
                 isEditing={isEditing}
                 name="firstName"
                 onChange={(e) => setEditFirstName(e.target.value)}
@@ -212,7 +222,7 @@ export const ProfilePage = () => {
               />
               <InfoRow
                 label="Last Name"
-                value={isEditing ? editLastName : (userInfo?.lastName ?? '')}
+                value={isEditing ? editLastName : (userInfo?.lastName ?? "")}
                 isEditing={isEditing}
                 name="lastName"
                 onChange={(e) => setEditLastName(e.target.value)}
@@ -220,7 +230,7 @@ export const ProfilePage = () => {
               />
               <InfoRow
                 label="Email"
-                value={isEditing ? editEmail : (userInfo?.email ?? '')}
+                value={isEditing ? editEmail : (userInfo?.email ?? "")}
                 isEditing={isEditing}
                 name="email"
                 onChange={(e) => setEditEmail(e.target.value)}
