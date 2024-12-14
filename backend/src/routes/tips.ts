@@ -19,10 +19,10 @@ tipsRouter.get("/", async (req, res) => {
   try {
     const tipsCollection = collection(DB, "tips");
     const tipsSnapshot = await getDocs(tipsCollection);
-    
-    const tips = tipsSnapshot.docs.map(doc => ({
+
+    const tips = tipsSnapshot.docs.map((doc) => ({
       tipId: doc.id,
-      ...doc.data()
+      ...doc.data(),
     }));
 
     res.json({ tips });
@@ -37,7 +37,7 @@ tipsRouter.post("/", async (req, res) => {
     title: req.body.title,
     type: req.body.type,
     authorId: req.body.authorId,
-    tagsCount: req.body.tags?.length || 0
+    tagsCount: req.body.tags?.length || 0,
   });
 
   try {
@@ -53,7 +53,7 @@ tipsRouter.post("/", async (req, res) => {
     console.log(`[${new Date().toISOString()}] Successfully created tip:`, {
       tipId: ret.tipId,
       authorId: req.body.authorId,
-      type: req.body.type
+      type: req.body.type,
     });
 
     res.send(ret);
@@ -61,7 +61,7 @@ tipsRouter.post("/", async (req, res) => {
     console.error(`[${new Date().toISOString()}] Failed to create tip:`, {
       error: e.message,
       authorId: req.body.authorId,
-      type: req.body.type
+      type: req.body.type,
     });
 
     res.status(400).json({ error: e.message });
@@ -76,10 +76,10 @@ tipsRouter.get("/:id", async (req, res) => {
       throw new Error("Tip does not exist");
     }
     const tipData = docSnapshot.data();
-    
+
     res.send({
       tipId: docSnapshot.id,
-      ...tipData
+      ...tipData,
     });
   } catch (e: any) {
     res.status(400).json({ error: e.message });
@@ -104,7 +104,7 @@ tipsRouter.put("/:userid/upvote", async (req, res) => {
       req.body.tipId,
       req.body.turnon
     );
-  
+
     res.send(ret);
   } catch (e: any) {
     res.status(400).json({ error: e.message });
@@ -118,7 +118,7 @@ tipsRouter.put("/:userid/downvote", async (req, res) => {
       req.body.tipId,
       req.body.turnon
     );
-  
+
     res.send(ret);
   } catch (e: any) {
     res.status(400).json({ error: e.message });
@@ -132,24 +132,57 @@ tipsRouter.put("/:userid/favourite", async (req, res) => {
       req.body.tipId,
       req.body.turnon
     );
-  
+
     res.send(ret);
   } catch (e: any) {
     res.status(400).json({ error: e.message });
   }
 });
 
-tipsRouter.post("/:userid/comment", async (req, res) => {
+// @ts-ignore
+tipsRouter.post("/:tipId/comment", async (req, res) => {
+  const startTime = Date.now();
+  const { tipId } = req.params;
+  const { userId, content } = req.body;
+
+  console.log(`[${new Date().toISOString()}] Received comment request:`, {
+    tipId,
+    userId,
+    contentLength: content?.length,
+  });
+
   try {
-    const ret = await commentPost(
-      req.params.userid,
-      req.body.tipId,
-      req.body.content
-    );
-    
-    res.send(ret);
-  } catch (e: any) {
-    res.status(400).json({ error: e.message });
+    if (!userId || !content || !tipId) {
+      console.warn(`[${new Date().toISOString()}] Missing required fields:`, {
+        hasUserId: !!userId,
+        hasContent: !!content,
+        hasTipId: !!tipId,
+      });
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    await commentPost(userId, tipId, content);
+
+    const duration = Date.now() - startTime;
+    console.log(`[${new Date().toISOString()}] Comment request completed:`, {
+      tipId,
+      userId,
+      duration: `${duration}ms`,
+    });
+
+    res.status(200).json({ message: "Comment added successfully" });
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    console.error(`[${new Date().toISOString()}] Comment request failed:`, {
+      error: error instanceof Error ? error.message : "Unknown error",
+      tipId,
+      userId,
+      duration: `${duration}ms`,
+    });
+
+    res.status(500).json({
+      error: error instanceof Error ? error.message : "Failed to add comment",
+    });
   }
 });
 
