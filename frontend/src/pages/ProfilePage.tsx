@@ -27,6 +27,25 @@ interface UserData {
   email: string;
 }
 
+interface Rating {
+  value: 1 | 2 | 3 | 4 | 5;
+  raterId: string;
+}
+
+interface TipData {
+  tipId: string;
+  title: string;
+  type: string; // Can be expanded to include other types if needed
+  authorId: string;
+  tags: string[];
+  ratings: Rating[];
+  description: string;
+  upvotes: string[]; // Array of userIds
+  downvotes: string[]; // Array of userIds
+  createdAt: string;
+  content: string;
+}
+
 export const ProfilePage = () => {
   const { isDeath } = useThemeContext();
   const theme = themeConfig[isDeath ? "death" : "life"];
@@ -35,55 +54,65 @@ export const ProfilePage = () => {
   const [userInfo, setUserInfo] = useState<UserData | null>(null);
   const [favList, setFavList] = useState<string[]>([]);
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-  
-  
+  const [isEditing, setIsEditing] = useState(false);
+  const [editInfo, setEditInfo] = useState({ ...userInfo });
+  const [tipData, setTipData] = useState<TipData[]>([]);
+
   useEffect(() => {
-    let isMounted = true;
     const fetchData = async () => {
-      try {        
+      try {
         const userId = localStorage.getItem("userId");
         const userResponse = await axios.get(`${API_URL}/users/${userId}`);
-
-        if (isMounted) {
-          setUserInfo({
-            userName: userResponse?.data?.firstName,
-            fullName: userResponse?.data?.firstName +' ' + userResponse?.data?.lastName,
-            profileUrl: userResponse?.data?.profileUrl,
-            email: userResponse?.data?.email,
-          });
-          setFavList(userResponse?.data?.favouritePosts || []);
-          
-
+  
+        // Set user info
+        setUserInfo({
+          userName: userResponse?.data?.firstName,
+          fullName: `${userResponse?.data?.firstName} ${userResponse?.data?.lastName}`,
+          profileUrl: userResponse?.data?.profileUrl,
+          email: userResponse?.data?.email,
+        });
+  
+        // Set favorite list
+        const favList = userResponse?.data?.favouritePosts || [];
+        setFavList(favList);
+  
+        // Fetch favorite tips
+        if (favList.length > 0) {
+          const fetchedTips = await Promise.all(
+            favList.map(async (tipId) => {
+              try {
+                const tipResponse = await axios.get(`${API_URL}/tips/${tipId}`);
+                return tipResponse.data;
+              } catch (err) {
+                console.error(`Error fetching tip ${tipId}:`, err);
+                return null; // Continue even if one fails
+              }
+            })
+          );
+          setTipData(fetchedTips.filter((tip) => tip !== null));
+          const deathTips = tipData.filter((tip) => (tip.type === "DEATH"));
+          const lifeTips = tipData.filter((tip) => (tip.type === "LIFE"));
+          console.log("Favourite tips:", deathTips,lifeTips );
         }
-        console.log("User data:", userResponse.data);
-
-      }  catch (err) {
+      } catch (err) {
         console.error("Error fetching data:", err);
-        if (isMounted) setError("Failed to load user data");
+        setError("Failed to load user data");
       } finally {
-        if (isMounted) setIsLoading(false);
+        setIsLoading(false); // Always stop loading indicator
       }
     };
+  
     fetchData();
-    return () => {
-      isMounted = false;
-    };
-  },[]);
+  }, []);
+  
 
   const profilePic =
     "https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg";
   
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [editInfo, setEditInfo] = useState({ ...userInfo });
-
   const [showingDeathTips, setShowingDeathTips] = useState(isDeath);
 
   useEffect(() => {
-   
-    console.log("Favourite posts:", favList);
-    setShowingDeathTips(isDeath);
- 
+       setShowingDeathTips(isDeath);
   }, [isDeath]);
 
   const handleEdit = () => setIsEditing(true);
@@ -136,7 +165,6 @@ export const ProfilePage = () => {
   );
   if (!isLoading){
     return (
-  
       <div className={`min-h-screen ${theme.background}`}>
         {/* Personal Info Section */}
         <div
@@ -234,26 +262,38 @@ export const ProfilePage = () => {
   
           {/* Grid Cards */}
           <div className="mt-8 grid grid-cols-3 gap-4 px-4">
-            {isLoading&&(showingDeathTips ? deathTips : lifeTips).map((tip, index) => (
-              <Link to="/tip" key={index} className="scale-90 transform">
+            { tipData.filter((tip) => (showingDeathTips? tip.type === "DEATH" : tip.type == "LIFE")) 
+              .map((tip) => (
+                <div
+                key={tip.tipId}
+                className="cursor-pointer transition-transform hover:-translate-y-1"
+                onClick={() => (window.location.href = `/tip/${tip.tipId}`)}
+              >
                 <GridCard
                   title={tip.title}
                   tags={tip.tags}
-                  rating={tip.rating}
+                  rating={
+                    tip.ratings?.reduce((acc, curr) => acc + curr.value, 0) /
+                      (tip.ratings?.length || 1) || 0
+                  }
                   description={tip.description}
-                  isDeath={showingDeathTips}
+                  isDeath={isDeath}
                 />
-              </Link>
+              </div>
             ))}
           </div>
         </div>
       </div>
     );
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   if (error) {
     return <div>Error: {error}</div>;
   }
-  
+
   }
   
 
