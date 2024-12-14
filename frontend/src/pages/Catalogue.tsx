@@ -8,21 +8,6 @@ import axios from "axios";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
 import { useNavigate } from "react-router-dom";
 
-// Mock data for tips
-// const lifeTips = Array(9).fill({
-//   title: "Drink water everyday",
-//   tags: ["#tags", "#tags", "#tags"],
-//   rating: 3,
-//   description: "study shows that everyone who drinks water die in the end.",
-// });
-
-// const deathTips = Array(9).fill({
-//   title: "Drink water everyday",
-//   tags: ["#tags", "#tags", "#tags"],
-//   rating: 3,
-//   description: "study shows that everyone who drinks water die in the end.",
-// });
-
 interface TipData {
   tipId: string;
   title: string;
