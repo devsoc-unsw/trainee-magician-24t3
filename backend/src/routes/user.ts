@@ -85,30 +85,40 @@ userRouter.delete("/:id", (async (req: Request, res: Response) => {
 
 userRouter.put("/:id", (async (req: Request, res: Response) => {
   try {
-    console.log("Update request received for user:", req.params.id, req.body);
-
-    const userId = req.params.id;
     const { firstName, lastName, email } = req.body;
-    const updatedData = req.body;
+    const userId = req.params.id;
 
-    console.log("Updating user info:", updatedData);
+    // Input validation
     if (!firstName || !lastName || !email) {
-      return res.status(400).json({ error: "Missing required fields" });
+      return res.status(400).json({ error: 'All fields are required' });
     }
 
+    // Update user info
     const result = await updateUserInfo(userId, email, firstName, lastName);
-
     if (!result) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: 'User not found' });
     }
 
-    res.status(200).json({
-      message: "User updated successfully",
-      userId: result.userId,
+    // Fetch updated user data
+    const userDoc = await getDoc(doc(DB, "users", userId));
+    if (!userDoc.exists()) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const userData = userDoc.data();
+    // Return the complete updated user data
+    res.json({
+      id: userDoc.id,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      profileUrl: userData.profileUrl,
+      favouritePosts: userData.favouritePosts
     });
-  } catch (e: any) {
-    console.error("Error updating user:", e.message);
-    res.status(500).json({ error: e.message });
+
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(400).json({ error: 'Failed to update user info' });
   }
 }) as RequestHandler);
 
