@@ -3,16 +3,9 @@ import { themeConfig } from "../../config/theme.config";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { UserData } from "../../types/user";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
-interface UserData {
-  firstName: string;
-  lastName: string;
-  profileUrl?: string;
-  email: string;
-  favouritePosts: string[];
-}
 
 const WelcomeIcon = () => {
   const { isDeath } = useThemeContext();
