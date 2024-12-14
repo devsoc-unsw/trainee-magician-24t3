@@ -55,9 +55,12 @@ tipsRouter.get("/:id", async (req, res) => {
     if (!docSnapshot.exists()) {
       throw new Error("Tip does not exist");
     }
-    const ret = docSnapshot.data();
-
-    res.send(ret);
+    const tipData = docSnapshot.data();
+    
+    res.send({
+      tipId: docSnapshot.id,
+      ...tipData
+    });
   } catch (e: any) {
     res.status(400).json({ error: e.message });
   }
