@@ -15,15 +15,26 @@ import { commentPost } from "../tips/commentPost";
 
 const tipsRouter = Router();
 
+interface TipData {
+  type: "LIFE" | "DEATH";
+  [key: string]: any;
+}
+
 tipsRouter.get("/", async (req, res) => {
   try {
+    const { type } = req.query;
     const tipsCollection = collection(DB, "tips");
     const tipsSnapshot = await getDocs(tipsCollection);
 
-    const tips = tipsSnapshot.docs.map((doc) => ({
+    let tips = tipsSnapshot.docs.map((doc) => ({
       tipId: doc.id,
-      ...doc.data(),
+      ...(doc.data() as TipData),
     }));
+
+    // Filter by type if specified
+    if (type) {
+      tips = tips.filter((tip) => tip.type === type);
+    }
 
     res.json({ tips });
   } catch (error) {
@@ -80,22 +91,26 @@ tipsRouter.get("/:id", async (req, res) => {
     // Get the tip author's information
     const tipAuthorRef = doc(DB, "users", tipData.authorId);
     const tipAuthorSnapshot = await getDoc(tipAuthorRef);
-    const tipAuthorData = tipAuthorSnapshot.exists() ? tipAuthorSnapshot.data() : null;
+    const tipAuthorData = tipAuthorSnapshot.exists()
+      ? tipAuthorSnapshot.data()
+      : null;
 
     const responseData = {
       ...tipData,
       tipId: docSnapshot.id,
-      author: tipAuthorData ? {
-        name: `${tipAuthorData.firstName} ${tipAuthorData.lastName}`,
-        profilePic: tipAuthorData.profileUrl,
-        firstName: tipAuthorData.firstName,
-        lastName: tipAuthorData.lastName
-      } : {
-        name: "Unknown User",
-        profilePic: undefined,
-        firstName: "Unknown",
-        lastName: "User"
-      }
+      author: tipAuthorData
+        ? {
+            name: `${tipAuthorData.firstName} ${tipAuthorData.lastName}`,
+            profilePic: tipAuthorData.profileUrl,
+            firstName: tipAuthorData.firstName,
+            lastName: tipAuthorData.lastName,
+          }
+        : {
+            name: "Unknown User",
+            profilePic: undefined,
+            firstName: "Unknown",
+            lastName: "User",
+          },
     };
 
     res.send(responseData);
