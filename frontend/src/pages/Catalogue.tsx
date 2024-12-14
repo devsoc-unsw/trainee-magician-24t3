@@ -1,4 +1,3 @@
-import GridCard from "../components/GridCard";
 import WelcomeIcon from "../components/WelcomeIcon";
 import logo from "../assets/logo.svg";
 import { useThemeContext } from "../contexts/ThemeContext";
@@ -7,21 +6,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
 import { useNavigate } from "react-router-dom";
-
-interface TipData {
-  tipId: string;
-  title: string;
-  type: "LIFE" | "DEATH";
-  description: string;
-  tags: string[];
-  ratings: Array<{ value: number; raterId: string }>;
-  content: string;
-  authorId: string;
-  createdAt: number;
-  upvotes: string[];
-  downvotes: string[];
-  comments: Array<{ authorId: string; content: string; createdAt: number }>;
-}
+import TipsGrid from "../components/TipsGrid/TipsGrid";
+import { TipData } from "../types/tip";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -37,11 +23,9 @@ export const Catalogue = () => {
     const fetchTips = async () => {
       setIsLoading(true);
       try {
-        const tipsResponse = await axios.get(`${API_URL}/tips/`);
-        const filteredTips = tipsResponse.data.tips.filter((tip: TipData) =>
-          isDeath ? tip.type === "DEATH" : tip.type === "LIFE"
-        );
-        setTips(filteredTips);
+        const type = isDeath ? "DEATH" : "LIFE";
+        const tipsResponse = await axios.get(`${API_URL}/tips?type=${type}`);
+        setTips(tipsResponse.data.tips);
       } catch (error) {
         console.error("Failed to fetch tips:", error);
         setError("Failed to load tips");
@@ -52,16 +36,6 @@ export const Catalogue = () => {
 
     fetchTips();
   }, [isDeath]);
-
-  if (isLoading) {
-    return (
-      <div
-        className={`min-h-screen ${theme.background} flex items-center justify-center`}
-      >
-        <div className={theme.text}>Loading...</div>
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -122,26 +96,13 @@ export const Catalogue = () => {
 
       {/* Grid Layout */}
       <div className="mx-auto max-w-7xl px-8">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {tips.map((tip) => (
-            <div
-              key={tip.tipId}
-              className="cursor-pointer transition-transform hover:-translate-y-1"
-              onClick={() => (window.location.href = `/tip/${tip.tipId}`)}
-            >
-              <GridCard
-                title={tip.title}
-                tags={tip.tags}
-                rating={
-                  tip.ratings?.reduce((acc, curr) => acc + curr.value, 0) /
-                    (tip.ratings?.length || 1) || 0
-                }
-                description={tip.description}
-                isDeath={isDeath}
-              />
-            </div>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex h-64 items-center justify-center">
+            <div className={theme.text}>Loading...</div>
+          </div>
+        ) : (
+          <TipsGrid tips={tips} isDeath={isDeath} />
+        )}
       </div>
     </div>
   );
