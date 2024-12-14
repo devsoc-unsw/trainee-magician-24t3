@@ -2,12 +2,13 @@ import WelcomeIcon from "../components/WelcomeIcon";
 import logo from "../assets/logo.svg";
 import { useThemeContext } from "../contexts/ThemeContext";
 import { themeConfig } from "../config/theme.config";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
 import { useNavigate } from "react-router-dom";
 import TipsGrid from "../components/TipsGrid/TipsGrid";
 import { TipData } from "../types/tip";
+import debounce from "lodash/debounce";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -15,8 +16,10 @@ export const Catalogue = () => {
   const { isDeath } = useThemeContext();
   const theme = themeConfig[isDeath ? "death" : "life"];
   const [isLoading, setIsLoading] = useState(true);
-  const [tips, setTips] = useState<TipData[]>([]);
+  const [allTips, setAllTips] = useState<TipData[]>([]);
+  const [filteredTips, setFilteredTips] = useState<TipData[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,8 +27,10 @@ export const Catalogue = () => {
       setIsLoading(true);
       try {
         const type = isDeath ? "DEATH" : "LIFE";
-        const tipsResponse = await axios.get(`${API_URL}/tips?type=${type}`);
-        setTips(tipsResponse.data.tips);
+        const response = await axios.get(`${API_URL}/tips?type=${type}`);
+        const fetchedTips = response.data.tips;
+        setAllTips(fetchedTips);
+        setFilteredTips(fetchedTips);
       } catch (error) {
         console.error("Failed to fetch tips:", error);
         setError("Failed to load tips");
@@ -36,6 +41,24 @@ export const Catalogue = () => {
 
     fetchTips();
   }, [isDeath]);
+
+  const debouncedFilter = useCallback((term: string) => {
+    debounce((searchTerm: string) => {
+      const filtered = allTips.filter(tip => 
+        tip.title.toLowerCase().includes(searchTerm) ||
+        tip.description.toLowerCase().includes(searchTerm) ||
+        tip.tags?.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+        tip.author?.name?.toLowerCase().includes(searchTerm)
+      );
+      setFilteredTips(filtered);
+    }, 500)(term);
+  }, [allTips]);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+    debouncedFilter(term);
+  };
 
   if (error) {
     return (
@@ -73,7 +96,9 @@ export const Catalogue = () => {
           <div className="relative w-full flex-1">
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search tips..."
+              value={searchTerm}
+              onChange={handleSearch}
               className={`w-full rounded-lg border px-6 py-3 outline-none ${theme.background} ${theme.text} ${theme.placeholder} ${theme.borderColor}`}
             />
             <button className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -86,12 +111,7 @@ export const Catalogue = () => {
           >
             New Tip
           </button>
-        </div>
-        <button
-          className={`ml-4 mt-2 text-left text-sm hover:underline ${theme.secondaryText}`}
-        >
-          Add Filter
-        </button>
+        </div>       
       </div>
 
       {/* Grid Layout */}
@@ -101,7 +121,7 @@ export const Catalogue = () => {
             <div className={theme.text}>Loading...</div>
           </div>
         ) : (
-          <TipsGrid tips={tips} isDeath={isDeath} />
+          <TipsGrid tips={filteredTips} isDeath={isDeath} />
         )}
       </div>
     </div>
