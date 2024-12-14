@@ -13,11 +13,15 @@ export async function commentPost(
   }
 
   try {
-    // Check if user exists
-    const userExists = await doesUserExist(userId);
-    if (!userExists) {
+    // Check if user exists and get their data
+    const userRef = doc(DB, "users", userId);
+    const userSnapshot = await getDoc(userRef);
+    
+    if (!userSnapshot.exists()) {
       throw new Error('User does not exist');
     }
+    
+    const userData = userSnapshot.data();
 
     // Get tip document
     const docRef = doc(DB, "tips", tipId);
@@ -32,11 +36,17 @@ export async function commentPost(
     // Initialize comments array if it doesn't exist
     const comments = docData.comments || [];
     
-    // Add new comment
+    // Add new comment with author information
     const newComment = {
       authorId: userId,
       content: content,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      author: {
+        name: `${userData.firstName} ${userData.lastName}`,
+        profilePic: userData.profileUrl,
+        firstName: userData.firstName,
+        lastName: userData.lastName
+      }
     };
     
     comments.push(newComment);

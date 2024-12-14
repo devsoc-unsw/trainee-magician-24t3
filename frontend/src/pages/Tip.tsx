@@ -22,10 +22,11 @@ interface Comment {
   authorId: string;
   content: string;
   createdAt: string;
-  // Additional frontend-only properties after fetching
-  author?: {
+  author: {
     name: string;
     profilePic?: string;
+    firstName: string;
+    lastName: string;
   };
 }
 
@@ -33,29 +34,32 @@ interface NewComment {
   authorId: string;
   content: string;
   createdAt: string;
-  author?: {
+  author: {
     name: string;
     profilePic?: string;
+    firstName: string;
+    lastName: string;
   };
 }
 
 interface TipProps {
   tipId: string;
   title: string;
-  type: "DEATH OR LIFE"; // Can be expanded to include other types if needed
+  type: "DEATH OR LIFE";
   authorId: string;
   tags: string[];
   ratings: Rating[];
   description: string;
-  upvotes: string[]; // Array of userIds
-  downvotes: string[]; // Array of userIds
+  upvotes: string[];
+  downvotes: string[];
   createdAt: string;
   content: string;
   comments: Comment[];
-  // Additional frontend-only properties after fetching
-  author?: {
+  author: {
     name: string;
-    profilePic: string;
+    profilePic?: string;
+    firstName: string;
+    lastName: string;
   };
   currentUser?: {
     userId: string;
@@ -168,7 +172,7 @@ const TipContent = ({
         content: newCommentText.trim()
       });
 
-      // Create new comment object for local state
+      // Create new comment object for local state with full author info
       const newComment: NewComment = {
         authorId: userId,
         content: newCommentText.trim(),
@@ -176,6 +180,8 @@ const TipContent = ({
         author: {
           name: `${currentUser.firstName} ${currentUser.lastName}`,
           profilePic: currentUser.profileUrl,
+          firstName: currentUser.firstName,
+          lastName: currentUser.lastName
         },
       };
 
@@ -185,7 +191,6 @@ const TipContent = ({
     } catch (error) {
       console.error("Failed to post comment:", error);
       
-      // More user-friendly error message with toast
       if (axios.isAxiosError(error) && error.response) {
         toast.error(`Failed to post comment: ${error.response.data.error}`);
       } else {
@@ -196,7 +201,7 @@ const TipContent = ({
 
   return (
     <div
-      className={`flex h-full flex-col items-center ${theme.background} ${theme.text}`}
+      className={`flex flex-col items-center ${theme.background} ${theme.text}`}
     >
       <div
         id="tip-header-container"
@@ -330,20 +335,14 @@ export const Tip = () => {
           };
         }
 
-        // Fetch the actual tip data
+        // Fetch the tip data (now includes author information)
         const tipResponse = await axios.get(`${API_URL}/tips/${tipId}`);
-        console.log("Tip response:", tipResponse.data);
+        
         const tipData = {
           ...tipResponse.data,
           tipId,
           currentUser: userData || undefined,
-          // Add author data - you might need to fetch this separately
-          author: {
-            name: "Author Name", // Replace with actual author data
-            profilePic: "profile_url", // Replace with actual author profile pic
-          },
         };
-        console.log("Processed tip data:", tipData);
 
         setTipData(tipData);
       } catch (err) {
