@@ -10,7 +10,7 @@ import TipTags from "../components/TipTags";
 import FavouriteButton from "../components/FavouriteButton";
 import { useThemeContext } from "../contexts/ThemeContext";
 import { themeConfig } from "../config/theme.config";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { Rating, Comment, TipData as TipProps } from "../types/tip";
 
@@ -29,6 +29,7 @@ const TipContent = ({
   ratings = [],
   comments = [],
 }: TipProps) => {
+  const navigate = useNavigate();
   const { isDeath } = useThemeContext();
   const theme = themeConfig[isDeath ? "death" : "life"];
   const [localUpvotes, setLocalUpvotes] = useState(upvotes);
@@ -88,7 +89,7 @@ const TipContent = ({
     // Here you would make an API call to update the user's favouritePosts array
   };
 
-  const handleRatingSubmit = (newRating: number) => {
+  const handleRatingSubmit = async (newRating: number) => {
     const userId = currentUser?.userId;
     if (!userId) return;
 
@@ -101,7 +102,25 @@ const TipContent = ({
         { value: newRating as 1 | 2 | 3 | 4 | 5, raterId: userId },
       ];
     });
-    // Here you would make an API call to update the ratings
+
+    try {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        toast.error("Please login first");
+        navigate("/login");
+        return;
+      }
+
+      await axios.post(`${API_URL}/tips/${userId}/rate`, {
+        tipId: tipId,
+        value: newRating,
+      });
+
+      toast.success("Rating submitted successfully!");
+    } catch (error) {
+      console.error("Failed to submit rating:", error);
+      toast.error("Failed to submit rating");
+    }
   };
 
   const handleAddComment = async () => {
