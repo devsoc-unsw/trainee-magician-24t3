@@ -5,6 +5,7 @@ import { useThemeContext } from "../contexts/ThemeContext";
 import { themeConfig } from "../config/theme.config";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const lifeTips = Array(9).fill({
   title: "Drink Water Everyday",
@@ -62,8 +63,11 @@ export const ProfilePage = () => {
     setShowingDeathTips(newIsDeath);
   };
 
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     localStorage.removeItem('userId');
+    navigate('/');
     toast.success('Logout successful!');
   };
 
