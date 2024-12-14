@@ -12,6 +12,7 @@ import { upvotePost } from "../tips/upvotePost";
 import { downvotePost } from "../tips/downvotePost";
 import { favouritePost } from "../tips/favouritePost";
 import { commentPost } from "../tips/commentPost";
+import { submitRating } from "../tips/submitRating";
 
 const tipsRouter = Router();
 
@@ -216,6 +217,20 @@ tipsRouter.post("/:tipId/comment", async (req, res) => {
     res.status(500).json({
       error: error instanceof Error ? error.message : "Failed to add comment",
     });
+  }
+});
+
+tipsRouter.post("/:userid/rate", async (req, res) => {
+  try {
+    const ret = await submitRating(
+      req.params.userid,
+      req.body.tipId,
+      req.body.value
+    );
+
+    res.send(ret);
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
   }
 });
 
