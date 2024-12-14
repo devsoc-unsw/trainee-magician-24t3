@@ -35,7 +35,7 @@ function App() {
         <Route path="/" element={<Catalogue />} />
         <Route path="/login" element={<Login />} />
         {/* <Route path="/register" element={<Register />} /> */}
-        <Route path="/tip" element={<Tip />} />
+        <Route path="/tip/:tipId" element={<Tip />} />
         <Route
           path="/grid-card"
           element={

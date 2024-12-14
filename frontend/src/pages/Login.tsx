@@ -11,7 +11,7 @@ export const Login = () => {
       id="login-card-container"
       className={`flex h-full items-center justify-center ${theme.background}`}
     >
-      <LoginCard isDeath={isDeath} />
+      <LoginCard />
     </div>
   );
 };

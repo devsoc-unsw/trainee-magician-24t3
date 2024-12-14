@@ -68,6 +68,7 @@ export const Catalogue = () => {
 
         // Fetch tips
         const tipsResponse = await axios.get(`${API_URL}/tips/`);
+        console.log(tipsResponse)
         const filteredTips = tipsResponse.data.tips.filter((tip: TipData) => 
           isDeath ? tip.type === 'DEATH' : tip.type === 'LIFE'
         );
