@@ -6,6 +6,7 @@ import { themeConfig } from "../config/theme.config";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
+import { useNavigate } from "react-router-dom";
 
 // Mock data for tips
 // const lifeTips = Array(9).fill({
@@ -33,7 +34,7 @@ interface UserData {
 interface TipData {
   tipId: string;
   title: string;
-  type: 'LIFE' | 'DEATH';
+  type: "LIFE" | "DEATH";
   description: string;
   tags: string[];
   ratings: Array<{ value: number; raterId: string }>;
@@ -45,7 +46,7 @@ interface TipData {
   comments: Array<{ authorId: string; content: string; createdAt: number }>;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export const Catalogue = () => {
   const { isDeath } = useThemeContext();
@@ -54,6 +55,7 @@ export const Catalogue = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [tips, setTips] = useState<TipData[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,13 +70,14 @@ export const Catalogue = () => {
 
         // Fetch tips
         const tipsResponse = await axios.get(`${API_URL}/tips/`);
-        const filteredTips = tipsResponse.data.tips.filter((tip: TipData) => 
-          isDeath ? tip.type === 'DEATH' : tip.type === 'LIFE'
+        console.log(tipsResponse);
+        const filteredTips = tipsResponse.data.tips.filter((tip: TipData) =>
+          isDeath ? tip.type === "DEATH" : tip.type === "LIFE",
         );
         setTips(filteredTips);
       } catch (error) {
-        console.error('Failed to fetch data:', error);
-        setError('Failed to load data');
+        console.error("Failed to fetch data:", error);
+        setError("Failed to load data");
       } finally {
         setIsLoading(false);
       }
@@ -84,15 +87,23 @@ export const Catalogue = () => {
   }, [isDeath]); // Re-fetch when isDeath changes
 
   if (isLoading) {
-    return <div className={`min-h-screen ${theme.background} flex items-center justify-center`}>
-      <div className={theme.text}>Loading...</div>
-    </div>;
+    return (
+      <div
+        className={`min-h-screen ${theme.background} flex items-center justify-center`}
+      >
+        <div className={theme.text}>Loading...</div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className={`min-h-screen ${theme.background} flex items-center justify-center`}>
-      <div className={`${theme.text} text-red-500`}>{error}</div>
-    </div>;
+    return (
+      <div
+        className={`min-h-screen ${theme.background} flex items-center justify-center`}
+      >
+        <div className={`${theme.text} text-red-500`}>{error}</div>
+      </div>
+    );
   }
 
   return (
@@ -110,7 +121,7 @@ export const Catalogue = () => {
         </div>
 
         {/* Right section */}
-        <div className="flex w-1/4 justify-end">
+        <div className="flex w-1/4 items-center justify-end gap-4">
           <WelcomeIcon
             firstName={userData?.firstName}
             profilePic={userData?.profileUrl}
@@ -120,14 +131,22 @@ export const Catalogue = () => {
 
       {/* Search Bar */}
       <div className="mx-auto my-8 flex w-3/4 max-w-3xl flex-col">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search..."
-            className={`w-full rounded-lg border px-6 py-3 outline-none ${theme.background} ${theme.text} ${theme.placeholder} ${theme.borderColor}`}
-          />
-          <button className="absolute right-4 top-1/2 -translate-y-1/2">
-            🔍
+        <div className="flex gap-2">
+          <div className="relative w-full flex-1">
+            <input
+              type="text"
+              placeholder="Search..."
+              className={`w-full rounded-lg border px-6 py-3 outline-none ${theme.background} ${theme.text} ${theme.placeholder} ${theme.borderColor}`}
+            />
+            <button className="absolute right-4 top-1/2 -translate-y-1/2">
+              🔍
+            </button>
+          </div>
+          <button
+            onClick={() => navigate("/create-tip")}
+            className={`rounded-lg px-4 py-2 ${theme.text} border ${theme.borderColor} transition-all duration-200 ${theme.hoverAccent}`}
+          >
+            New Tip
           </button>
         </div>
         <button
@@ -144,12 +163,15 @@ export const Catalogue = () => {
             <div
               key={tip.tipId}
               className="cursor-pointer transition-transform hover:-translate-y-1"
-              onClick={() => window.location.href = `/tip/${tip.tipId}`}
+              onClick={() => (window.location.href = `/tip/${tip.tipId}`)}
             >
               <GridCard
                 title={tip.title}
                 tags={tip.tags}
-                rating={tip.ratings?.reduce((acc, curr) => acc + curr.value, 0) / (tip.ratings?.length || 1) || 0}
+                rating={
+                  tip.ratings?.reduce((acc, curr) => acc + curr.value, 0) /
+                    (tip.ratings?.length || 1) || 0
+                }
                 description={tip.description}
                 isDeath={isDeath}
               />

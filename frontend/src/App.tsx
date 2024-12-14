@@ -7,6 +7,7 @@ import GridCard from "./components/GridCard";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { Toaster } from "react-hot-toast";
 import { ProfilePage } from "./pages/ProfilePage";
+import { CreateTip } from "./pages/CreateTip";
 
 function App() {
   return (
@@ -34,8 +35,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Catalogue />} />
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/register" element={<Register />} /> */}
-        <Route path="/tip" element={<Tip />} />
+        <Route path="/create-tip" element={<CreateTip />} />
+        <Route path="/tip/:tipId" element={<Tip />} />
         <Route
           path="/grid-card"
           element={

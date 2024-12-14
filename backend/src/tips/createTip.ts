@@ -10,7 +10,8 @@ export async function createTip(
   type: string,
   authorId: string,
   description: string,
-  content: string
+  content: string,
+  tags: string[] = []
 ): Promise<CreateTipReturn> {
   if (title === '' || type === '' || authorId == '' || content == '') {
     throw new Error('Cannot have empty fields');
@@ -20,7 +21,7 @@ export async function createTip(
     title: title,
     type: type,
     authorId: authorId,
-    tags: [],
+    tags: tags,
     ratings: [],
     description: description,
     upvotes: [],
