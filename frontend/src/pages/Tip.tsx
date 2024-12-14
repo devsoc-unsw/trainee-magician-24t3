@@ -11,6 +11,7 @@ import FavouriteButton from "../components/FavouriteButton";
 import { useThemeContext } from "../contexts/ThemeContext";
 import { themeConfig } from "../config/theme.config";
 import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 interface Rating {
   value: 1 | 2 | 3 | 4 | 5;
@@ -193,7 +194,7 @@ const TipContent = ({
     currentUser && localDownvotes.includes(currentUser.userId),
   );
 
-  const handleUpvote = (isUpvoting: boolean) => {
+  const handleUpvote = async (isUpvoting: boolean) => {
     const userId = currentUser?.userId;
     if (!userId) return;
 
@@ -205,9 +206,21 @@ const TipContent = ({
       }
     });
     // Here you would make an API call to update the upvotes
+
+    try {
+      await axios.put(`${API_URL}/tips/${userId}/upvote`, {
+        userId: userId,
+        tipId: tipId,
+        turnon: isUpvoting
+      });
+      toast.success(isUpvoting ? "Tip upvoted successfully" : "Tip upvote reverted successfully");
+    } catch (error) {
+      console.error("Error updating upvote:", error);
+      toast.error("Failed to update upvote");
+    }
   };
 
-  const handleDownvote = (isDownvoting: boolean) => {
+  const handleDownvote = async (isDownvoting: boolean) => {
     const userId = currentUser?.userId;
     if (!userId) return;
 
@@ -219,6 +232,19 @@ const TipContent = ({
       }
     });
     // Here you would make an API call to update the downvotes
+
+    try {
+      await axios.put(`${API_URL}/tips/${userId}/downvote`, {
+        userId: userId,
+        tipId: tipId,
+        turnon: isDownvoting
+      });
+
+      toast.success(isDownvoting ? "Tip downvoted successfully" : "Tip downvote reverted successfully")
+    } catch (error) {
+      console.error("Error updating downvote", error);
+      toast.error("Failed to update downvote");
+    }
   };
 
   const handleFavourite = (isFavouriting: boolean) => {
