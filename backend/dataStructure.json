@@ -1,38 +1,52 @@
 {
   "users": [
     {
+      "userId": "string",
       "firstName": "string",
       "lastName": "string",
-      "profileUrl": "string",
-      "favouritePosts": ["array of tip ids"],
+      "profileUrl": "string | undefined",
+      "favouritePosts": ["string (tip ids)"],
       "password": "string",
       "email": "string"
     }
   ],
   "tips": [
     {
+      "tipId": "string",
       "title": "string",
-      "type": "DEATH or LIFE",
-      "authorId": "id of user who created post",
-      "tags": ["tag_name_1"],
+      "type": "LIFE | DEATH",
+      "authorId": "string (user id)",
+      "description": "string",
+      "tags": ["string"],
       "ratings": [
         {
-          "value": "integer value of 1, 2, 3, 4 or 5",
-          "raterId": "id of user who made the rating"
+          "value": "1 | 2 | 3 | 4 | 5",
+          "raterId": "string (user id)"
         }
       ],
-      "description": "string",
-      "upvotes": ["array of user Ids"],
-      "downvotes": ["array of user Ids"],
-      "createdAt": "integer value of milliseconds since epoch",
-      "content": "string...post yap",
+      "content": "string",
+      "upvotes": ["string (user ids)"],
+      "downvotes": ["string (user ids)"],
+      "createdAt": "number (milliseconds since epoch)",
       "comments": [
         {
-          "authorId": "id of user who created comment",
+          "authorId": "string (user id)",
           "content": "string",
-          "createdAt": "Integer value of milliseconds since epoch"
+          "createdAt": "string (ISO date string)",
+          "author": {
+            "name": "string",
+            "profilePic": "string | undefined",
+            "firstName": "string",
+            "lastName": "string"
+          }
         }
-      ]
+      ],
+      "author": {
+        "name": "string",
+        "profilePic": "string | undefined",
+        "firstName": "string",
+        "lastName": "string"
+      }
     }
   ]
 }

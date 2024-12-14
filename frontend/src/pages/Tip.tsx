@@ -56,101 +56,9 @@ interface TipProps {
   };
 }
 
-// Update mock data to include emails in upvotes/downvotes
-// const mockTip: TipProps = {
-//   tipId: "tip123",
-//   title: "This is my tip hello hello hello hello",
-//   type: "DEATH OR LIFE",
-//   authorId: "user123",
-//   description: "A sample tip description",
-//   upvotes: ["user123", "user1", "user2", "user3", "user4", "user5"],
-//   downvotes: ["user6", "user7", "user8", "user9", "user10"],
-//   createdAt: "2024-10-22T00:00:00.000Z",
-//   content: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magnam
-//     inventore ipsum officiis id provident blanditiis numquam
-//     exercitationem, atque molestiae porro, amet tempora saepe
-//     consequuntur eius adipisci perspiciatis fugiat sunt at minus? Sunt,
-//     porro nobis. Error dolorem at veritatis quam, sequi eligendi, vitae
-//     consequuntur distinctio voluptatum quod voluptate ut? Excepturi
-//     nesciunt inventore iste culpa ratione reiciendis ducimus porro, ut
-//     exercitationem commodi nobis vel minus minima enim cumque nostrum
-//     laborum! Cumque dicta nemo animi suscipit tenetur dolore architecto
-//     in adipisci aut quam! Aliquid, ut sed quidem possimus exercitationem
-//     voluptatem repudiandae, vel necessitatibus corporis rem modi iste!
-//     Libero natus eius dolor quam similique.\n\n
-//     Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quam
-//     debitis expedita numquam consequuntur id magni molestias quae
-//     repellendus aut laudantium vero quaerat in repellat impedit
-//     suscipit, reprehenderit sit dolore! Nostrum nam sequi, velit dolor
-//     dolorem unde minima consequatur quisquam facilis perspiciatis sint
-//     suscipit ea debitis aliquam omnis, eaque possimus nobis!`,
-//   tags: [
-//     "#lorem",
-//     "#ipsum",
-//     "#dolor",
-//     "#sit_amet_consectetur",
-//     "#elit",
-//     "#magnam",
-//     "#libero",
-//     "#adipisci",
-//     "#corporis",
-//     "#quae",
-//     "#suscipit",
-//     "#natus",
-//     "#rem",
-//   ],
-//   ratings: [
-//     { value: 3, raterId: "user1" },
-//     { value: 4, raterId: "user2" },
-//     { value: 3, raterId: "user3" },
-//   ],
-//   comments: [
-//     {
-//       authorId: "user456",
-//       content: "To be continued..",
-//       createdAt: "2024-10-26T00:00:00.000Z",
-//       author: {
-//         name: "Some name1",
-//         profilePic:
-//           "https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg",
-//       },
-//     },
-//     {
-//       authorId: "user789",
-//       content: "This is a comment!2",
-//       createdAt: "2024-10-26T00:00:00.000Z",
-//       author: {
-//         name: "Some name2",
-//         profilePic:
-//           "https://i.pinimg.com/474x/ca/f7/67/caf7677c71e8a7bf115c77ff8761fec5.jpg",
-//       },
-//     },
-//     {
-//       authorId: "user101",
-//       content:
-//         "This is a very long comment. This is a very long comment. This is a very long comment. This is a very long comment. This is a very long comment.",
-//       createdAt: "2024-10-26T00:00:00.000Z",
-//       author: {
-//         name: "Some name3",
-//       },
-//     },
-//   ],
-//   // Frontend-only data (would be populated after fetching)
-//   author: {
-//     name: "John Doe",
-//     profilePic:
-//       "https://i.pinimg.com/236x/93/27/52/932752831eb277a92480d9830b4c072d.jpg",
-//   },
-//   currentUser: {
-//     userId: "user123",
-//     firstName: "Jane",
-//     lastName: "Doe",
-//     profileUrl:
-//       "https://i.pinimg.com/236x/57/3a/46/573a46c7818f8cca76e394ac5af72542.jpg",
-//     favouritePosts: ["tip123"],
-//     email: "jane@example.com",
-//   },
-// };
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { Rating, Comment, TipData as TipProps } from "../types/tip";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -167,6 +75,7 @@ const TipContent = ({
   ratings = [],
   comments = [],
 }: TipProps) => {
+  const navigate = useNavigate();
   const { isDeath } = useThemeContext();
   const theme = themeConfig[isDeath ? "death" : "life"];
   const [localUpvotes, setLocalUpvotes] = useState(upvotes);
@@ -253,7 +162,7 @@ const TipContent = ({
     updateFav();
   };
 
-  const handleRatingSubmit = (newRating: number) => {
+  const handleRatingSubmit = async (newRating: number) => {
     const userId = currentUser?.userId;
     if (!userId) return;
 
@@ -266,31 +175,68 @@ const TipContent = ({
         { value: newRating as 1 | 2 | 3 | 4 | 5, raterId: userId },
       ];
     });
-    // Here you would make an API call to update the ratings
+
+    try {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        toast.error("Please login first");
+        navigate("/login");
+        return;
+      }
+
+      await axios.post(`${API_URL}/tips/${userId}/rate`, {
+        tipId: tipId,
+        value: newRating,
+      });
+
+      toast.success("Rating submitted successfully!");
+    } catch (error) {
+      console.error("Failed to submit rating:", error);
+      toast.error("Failed to submit rating");
+    }
   };
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     const userId = currentUser?.userId;
     if (!userId || !newCommentText.trim()) return;
 
-    const newComment: Comment = {
-      authorId: userId,
-      content: newCommentText.trim(),
-      createdAt: new Date().toISOString(),
-      author: {
-        name: `${currentUser.firstName} ${currentUser.lastName}`,
-        profilePic: currentUser.profileUrl,
-      },
-    };
+    try {
+      // Make API call to add the comment
+      await axios.post(`${API_URL}/tips/${tipId}/comment`, {
+        userId,
+        content: newCommentText.trim()
+      });
 
-    setLocalComments((prev) => [...prev, newComment]);
-    setNewCommentText(""); // Clear input
-    // Here you would make an API call to add the comment
+      // Create new comment object for local state with full author info
+      const newComment: Comment = {
+        authorId: userId,
+        content: newCommentText.trim(),
+        createdAt: new Date().toISOString(),
+        author: {
+          name: `${currentUser.firstName} ${currentUser.lastName}`,
+          profilePic: currentUser.profileUrl,
+          firstName: currentUser.firstName,
+          lastName: currentUser.lastName
+        },
+      };
+
+      setLocalComments((prev) => [...prev, newComment]);
+      setNewCommentText(""); // Clear input
+      toast.success("Comment added successfully");
+    } catch (error) {
+      console.error("Failed to post comment:", error);
+      
+      if (axios.isAxiosError(error) && error.response) {
+        toast.error(`Failed to post comment: ${error.response.data.error}`);
+      } else {
+        toast.error("Failed to post comment. Please try again.");
+      }
+    }
   };
 
   return (
     <div
-      className={`flex h-full flex-col items-center ${theme.background} ${theme.text}`}
+      className={`flex flex-col items-center ${theme.background} ${theme.text} h-full`}
     >
       <div
         id="tip-header-container"
@@ -303,10 +249,7 @@ const TipContent = ({
           &lt; Back to Home
         </a>
 
-        <WelcomeIcon
-          firstName={currentUser?.firstName}
-          profilePic={currentUser?.profileUrl}
-        />
+        <WelcomeIcon />
       </div>
       <div
         id="tip-post-container"
@@ -427,20 +370,14 @@ export const Tip = () => {
           };
         }
 
-        // Fetch the actual tip data
+        // Fetch the tip data (now includes author information)
         const tipResponse = await axios.get(`${API_URL}/tips/${tipId}`);
-        console.log("Tip response:", tipResponse.data);
+        
         const tipData = {
           ...tipResponse.data,
           tipId,
           currentUser: userData || undefined,
-          // Add author data - you might need to fetch this separately
-          author: {
-            name: "Author Name", // Replace with actual author data
-            profilePic: "profile_url", // Replace with actual author profile pic
-          },
         };
-        console.log("Processed tip data:", tipData);
 
         setTipData(tipData);
       } catch (err) {

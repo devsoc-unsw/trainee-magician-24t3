@@ -33,7 +33,7 @@ const CommunityRating = ({
         </h3>
       )}
       <div className="flex items-center gap-2">
-        {range(5).map((circle) => (
+        {range(1, 6).map((circle) => (
           <button
             key={circle}
             className={`h-5 w-5 rounded-full border border-black transition-all duration-200 ${

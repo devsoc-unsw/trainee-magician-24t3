@@ -5,13 +5,9 @@ import { useThemeContext } from "../contexts/ThemeContext";
 import { themeConfig } from "../config/theme.config";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
 import axios from "axios";
-// const lifeTips = Array(9).fill({
-//   title: "Drink Water Everyday",
-//   tags: ["health", "drink"],
-//   rating: 3.5,
-//   description:
-//     "Study shows that everyone who drinks water everyday lives longer than those who never drinks.",
-// });
+
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 // const deathTips = Array(9).fill({
 //   title: "Drink Water Everyday",
@@ -146,6 +142,14 @@ export const ProfilePage = () => {
     setShowingDeathTips(newIsDeath);
   };
 
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('userId');
+    navigate('/');
+    toast.success('Logout successful!');
+  };
+
   const InfoRow = ({
     label,
     value,
@@ -190,6 +194,7 @@ export const ProfilePage = () => {
               src={profilePic}
               alt="Profile"
               className="h-48 w-48 rounded-full object-cover"
+
             />
           </div>
   
