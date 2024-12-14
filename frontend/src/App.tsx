@@ -31,7 +31,6 @@ function App() {
           },
         }}
       />
-      <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<Catalogue />} />
         <Route path="/login" element={<Login />} />
