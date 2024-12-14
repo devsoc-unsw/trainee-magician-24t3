@@ -7,6 +7,7 @@ export const themeConfig: Record<
     text: string;
     border: string;
     accent: string;
+    hoverAccent: string;
     accentText: string;
     placeholder: string;
     borderColor: string;
@@ -23,6 +24,7 @@ export const themeConfig: Record<
     text: "text-black",
     border: "border-[#63C779]",
     accent: "bg-[#63C779]",
+    hoverAccent: "hover:bg-[#63C779]",
     accentText: "text-[#63C779]",
     placeholder: "placeholder-gray-400",
     borderColor: "border-gray-300",
@@ -38,6 +40,7 @@ export const themeConfig: Record<
     text: "text-white",
     border: "border-[#F52A2A]",
     accent: "bg-[#F52A2A]",
+    hoverAccent: "hover:bg-[#F52A2A]",
     accentText: "text-[#F52A2A]",
     placeholder: "placeholder-gray-500",
     borderColor: "border-gray-700",
