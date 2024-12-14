@@ -11,6 +11,7 @@ import FavouriteButton from "../components/FavouriteButton";
 import { useThemeContext } from "../contexts/ThemeContext";
 import { themeConfig } from "../config/theme.config";
 import { useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 interface Rating {
   value: 1 | 2 | 3 | 4 | 5;
@@ -22,6 +23,16 @@ interface Comment {
   content: string;
   createdAt: string;
   // Additional frontend-only properties after fetching
+  author?: {
+    name: string;
+    profilePic?: string;
+  };
+}
+
+interface NewComment {
+  authorId: string;
+  content: string;
+  createdAt: string;
   author?: {
     name: string;
     profilePic?: string;
@@ -146,23 +157,41 @@ const TipContent = ({
     // Here you would make an API call to update the ratings
   };
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     const userId = currentUser?.userId;
     if (!userId || !newCommentText.trim()) return;
 
-    const newComment: Comment = {
-      authorId: userId,
-      content: newCommentText.trim(),
-      createdAt: new Date().toISOString(),
-      author: {
-        name: `${currentUser.firstName} ${currentUser.lastName}`,
-        profilePic: currentUser.profileUrl,
-      },
-    };
+    try {
+      // Make API call to add the comment
+      await axios.post(`${API_URL}/tips/${tipId}/comment`, {
+        userId,
+        content: newCommentText.trim()
+      });
 
-    setLocalComments((prev) => [...prev, newComment]);
-    setNewCommentText(""); // Clear input
-    // Here you would make an API call to add the comment
+      // Create new comment object for local state
+      const newComment: NewComment = {
+        authorId: userId,
+        content: newCommentText.trim(),
+        createdAt: new Date().toISOString(),
+        author: {
+          name: `${currentUser.firstName} ${currentUser.lastName}`,
+          profilePic: currentUser.profileUrl,
+        },
+      };
+
+      setLocalComments((prev) => [...prev, newComment]);
+      setNewCommentText(""); // Clear input
+      toast.success("Comment added successfully");
+    } catch (error) {
+      console.error("Failed to post comment:", error);
+      
+      // More user-friendly error message with toast
+      if (axios.isAxiosError(error) && error.response) {
+        toast.error(`Failed to post comment: ${error.response.data.error}`);
+      } else {
+        toast.error("Failed to post comment. Please try again.");
+      }
+    }
   };
 
   return (
